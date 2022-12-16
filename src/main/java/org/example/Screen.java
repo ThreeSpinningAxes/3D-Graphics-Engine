@@ -12,10 +12,13 @@ public class Screen {
     private GameEngine gameEngine;
 
     private Cube cube = new Cube();
+
     private Pyramid pyramid = new Pyramid();
 
+    private Triangle triangleBuffer = new Triangle();
 
-    private double time = 0;
+
+    private float time = 0;
 
     //these pixels will be transformed on in the background
     public int[] pixels;
@@ -24,47 +27,37 @@ public class Screen {
         this.windowPixelWidth = windowPixelWidth;
         this.windowPixelHeight = windowPixelHeight;
         this.pixels = new int[this.windowPixelWidth * this.windowPixelHeight];
-        this.gameEngine = new GameEngine(this.windowPixelWidth, this.windowPixelHeight, 90.0, 0.1, 1000.0);
+        this.gameEngine = new GameEngine(this.windowPixelWidth, this.windowPixelHeight, 90.0f, 0.1f, 1000.0f);
     }
 
     public void renderFrame() {
         time += 0.1;
-        Triangle transformedTriangle = new Triangle();
         for (Triangle triangle : cube.getMesh()) {
-            transformedTriangle.clear();
+            triangleBuffer.clear();
             int i = 0;
             for (Vector vector : triangle.points) {
-                //Vector transformedVector = new VectorTransformMatrixBuilder()
-                //.project(gameEngine.getAspectRatio(),  gameEngine.getFOVRadians(), gameEngine.getZFar(), gameEngine.getzNear(),
-                //           gameEngine.getWFactor())
-                // .projectVector(vector)
-                //.getVector();
-                // .translate(0,0,0)
-                // .rotate(time, 0.0, 0.0, 0.0)
-                // .scale( 1, 1,  1)
-                // .projectVector(vector);
                 Vector transformedVector = new VectorTransformMatrixBuilder()
                         .project(gameEngine.getAspectRatio(),  gameEngine.getFOVRadians(), gameEngine.getZFar(), gameEngine.getzNear(),
                                 gameEngine.getWFactor())
-                        .translate(250.0, 250.0, 3.0)
+                        .translate(250.0f, 250.0f, 3.0f)
                         .scaleToWindowScreen(windowPixelWidth, windowPixelHeight)
-                        .scale(0.5, 0.5,  1.0)
-                        .rotate(time, 0.0,0,1)
+                        .scale(0.5f, 0.5f,  1.0f)
+                        .rotate(time, 0.0f,0,1)
                         .projectVector(new Vector(vector))
                         .getVector();
 
-                //double x = transformedVector.getX();
-               // double y = transformedVector.getY();
-                //x += 1.0; x *= (0.5 * (double) this.windowPixelWidth);
-                //y += 1.0; y *= (0.5 * (double) this.windowPixelHeight);
+                //float x = transformedVector.getX();
+               // float y = transformedVector.getY();
+                //x += 1.0; x *= (0.5 * (float) this.windowPixelWidth);
+                //y += 1.0; y *= (0.5 * (float) this.windowPixelHeight);
                 //transformedVector.setX(x);
                 //transformedVector.setY(y);
-                transformedTriangle.addPoint(transformedVector, i);
+                triangleBuffer.addPoint(transformedVector, i);
                 i++;
             }
             //System.out.println(transformedTriangle.points.length);
             //Arrays.sort(transformedTriangle.points, (a, b) ->  a.getX() < b.getX() ? 1 : 0);
-            fillPixelsAsTriangle(transformedTriangle, 0x4285F4);
+            fillPixelsAsTriangle(triangleBuffer, 0x4285F4);
         }
     }
 

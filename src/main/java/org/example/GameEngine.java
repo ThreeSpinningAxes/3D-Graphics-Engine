@@ -7,19 +7,19 @@ public class GameEngine {
     private int screenWidth;
     private int screenHeight;
 
-    private double aspectRatio;
+    private float aspectRatio;
 
-    private double FOV;
+    private float FOV;
 
-    private double FOVRadians;
+    private float FOVRadians;
 
-    private double zNear;
+    private float zNear;
 
-    private double zFar;
+    private float zFar;
 
-    private double wFactor = 1.0;
+    private float wFactor = 1.0f;
 
-    public GameEngine(int screenWidth, int screenHeight, double FOV, double zNear, double zFar) {
+    public GameEngine(int screenWidth, int screenHeight, float FOV, float zNear, float zFar) {
         setScreenDimensions(screenWidth, screenHeight);
         setAspectRatio();
         setFOV(FOV);
@@ -28,14 +28,14 @@ public class GameEngine {
     }
 
     public GameEngine defaultGameEngine(int screenWidth, int screenHeight) {
-        return new GameEngine(screenWidth, screenHeight, 90.0, 0.01, 1000);
+        return new GameEngine(screenWidth, screenHeight, 90.0f, 0.01f, 1000);
     }
 
     private void setAspectRatio() {
-        this.aspectRatio = (double) screenHeight / (double) screenWidth;
+        this.aspectRatio = (float) screenHeight / (float) screenWidth;
     }
 
-    public void setZNear(double zNear) {
+    public void setZNear(float zNear) {
         this.zNear = zNear;
     }
 
@@ -44,37 +44,37 @@ public class GameEngine {
         this.screenHeight = screenHeight;
     }
 
-    public void setZFar(double zFar) {
+    public void setZFar(float zFar) {
         this.zFar = zFar;
     }
 
-    public void setFOV(double FOV) {
+    public void setFOV(float FOV) {
         this.FOV = FOV;
         setFOVRadians();
     }
 
-    public double getZFar() {
+    public float getZFar() {
         return zFar;
     }
 
-    public double getAspectRatio() {
+    public float getAspectRatio() {
         return aspectRatio;
     }
 
-    public double getFOVRadians() {
+    public float getFOVRadians() {
         return FOVRadians;
     }
 
-    public double getzNear() {
+    public float getzNear() {
         return zNear;
     }
 
-    public double getWFactor() {
+    public float getWFactor() {
         return wFactor;
     }
 
     public void setFOVRadians() {
-        this.FOVRadians = this.FOV * (Math.PI / 180.0);
+        this.FOVRadians = (float) (this.FOV * (Math.PI / 180.0));
     }
 
 }

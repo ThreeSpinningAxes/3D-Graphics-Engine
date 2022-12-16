@@ -14,19 +14,19 @@ public class VectorTransformMatrixBuilder extends SimpleMatrix {
         super(s);
     }
 
-    public VectorTransformMatrixBuilder scale(double xScale, double yScale, double zScale) {
+    public VectorTransformMatrixBuilder scale(float xScale, float yScale, float zScale) {
         return new VectorTransformMatrixBuilder(this.mult(ScalingMatrix.getScaledMatrix(xScale, yScale, zScale)));
     }
 
-    public VectorTransformMatrixBuilder rotate(double angle, double rotationAxisX, double rotationAxisY, double rotationAxisZ)  {
-        angle = angle * (Math.PI / 180.0);
+    public VectorTransformMatrixBuilder rotate(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ)  {
+        angle = (float) (angle * (Math.PI / 180.0));
         return new VectorTransformMatrixBuilder(this.mult(RotationMatrix.getRotatedMatrix(angle, rotationAxisX, rotationAxisY, rotationAxisZ)));
     }
-    public VectorTransformMatrixBuilder translate(double xTranslation, double yTranslation, double zTranslation)  {
+    public VectorTransformMatrixBuilder translate(float xTranslation, float yTranslation, float zTranslation)  {
         return new VectorTransformMatrixBuilder(this.mult(TranslationMatrix.getTranslatedMatrix(xTranslation, yTranslation, zTranslation)));
     }
 
-    public VectorTransformMatrixBuilder project(double aspectRatio, double FOVRadians, double zFar,  double zNear, double wFactor)  {
+    public VectorTransformMatrixBuilder project(float aspectRatio, float FOVRadians, float zFar,  float zNear, float wFactor)  {
         return new VectorTransformMatrixBuilder(this.mult(ProjectionMatrix.getProjectionMatrix(aspectRatio, FOVRadians, zFar,
                 zNear, wFactor)));
     }
@@ -59,6 +59,6 @@ public class VectorTransformMatrixBuilder extends SimpleMatrix {
     }
 
     public VectorTransformMatrixBuilder scaleToWindowScreen(int windowWidth, int windowHeight) {
-        return scale(windowWidth, windowHeight, 1.0);
+        return scale(windowWidth, windowHeight, 1.0f);
     }
 }

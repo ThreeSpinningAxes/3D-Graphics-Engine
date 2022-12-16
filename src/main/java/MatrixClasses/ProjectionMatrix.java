@@ -4,14 +4,14 @@ import org.ejml.simple.SimpleMatrix;
 import org.example.Vector;
 
 public class ProjectionMatrix {
-    private static final double[][] initialTranslationMatrix = new double[][]{
+    private static final float[][] initialTranslationMatrix = new float[][]{
             {0,0,0,0},
             {0,0,0,0},
             {0,0,0,0},
             {0,0,1,0}};
 
-    public static SimpleMatrix getProjectionMatrix(double aspectRatio, double FOVRadians, double zFar,  double zNear, double wFactor) {
-        double[][] projectionMatrix = initialTranslationMatrix.clone();
+    public static SimpleMatrix getProjectionMatrix(float aspectRatio, float FOVRadians, float zFar,  float zNear, float wFactor) {
+        float[][] projectionMatrix = initialTranslationMatrix.clone();
         projectionMatrix[0][0] = xScaleFactor(aspectRatio, FOVRadians);
         projectionMatrix[1][1] = yScaleFactor(FOVRadians);
         projectionMatrix[2][2] = zOffsetScaleFactor(zFar, zNear);
@@ -20,23 +20,19 @@ public class ProjectionMatrix {
         return new SimpleMatrix(projectionMatrix);
     }
 
-    private static double zOffsetScaleFactor(double zFar,  double zNear) {
+    private static float zOffsetScaleFactor(float zFar,  float zNear) {
         return zFar / (zFar - zNear);
     }
 
-    private static double zOffsetAfterScaled(double zFar,  double zNear) {
-        return  zNear * (-1.0 * zOffsetScaleFactor(zFar, zNear));
+    private static float zOffsetAfterScaled(float zFar,  float zNear) {
+        return (zNear * (-1.0f * zOffsetScaleFactor(zFar, zNear)));
     }
 
-    private static double xScaleFactor(double aspectRatio, double FOVRadians) {
-        return aspectRatio * (1.0 / Math.tan(FOVRadians / 2.0));
+    private static float xScaleFactor(float aspectRatio, float FOVRadians) {
+        return (float) (aspectRatio * (1.0f / Math.tan(FOVRadians / 2.0f)));
     }
 
-    private static double yScaleFactor(double FOVRadians) {
-        return 1.0 / (Math.tan(FOVRadians / 2.0));
+    private static float yScaleFactor(float FOVRadians) {
+        return (float) (1.0 / (Math.tan(FOVRadians / 2.0)));
     }
-
-
-
-
 }
