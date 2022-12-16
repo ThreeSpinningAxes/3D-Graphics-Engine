@@ -77,16 +77,4 @@ public class GameEngine {
         this.FOVRadians = this.FOV * (Math.PI / 180.0);
     }
 
-    public Vector getProjectionVector(Vector vector) {
-        Vector transformedVector = vector.isRowVector() ?
-                new Vector(vector.mult(this.projectionMatrix))
-                : new Vector(vector.getRowVector().mult(this.projectionMatrix));
-
-        if (transformedVector.getW() != 0.0) {
-            transformedVector.setX(transformedVector.getX() / transformedVector.getW());
-            transformedVector.setY(transformedVector.getY() / transformedVector.getW());
-            transformedVector.setZ(transformedVector.getZ() / transformedVector.getW());
-        }
-        return transformedVector;
-    }
 }

@@ -1,7 +1,6 @@
 package org.example;
 
 import MatrixClasses.VectorTransformMatrixBuilder;
-import org.ejml.simple.SimpleMatrix;
 
 import java.util.Arrays;
 
@@ -34,12 +33,11 @@ public class Screen {
             int i = 0;
             for (Vector vector : triangle.points) {
                 Vector transformedVector = new VectorTransformMatrixBuilder()
-                        .project(gameEngine.getAspectRatio(), gameEngine.getFOVRadians(), gameEngine.getZFar(), gameEngine.getzNear(),
-                                gameEngine.getWFactor())
-                        .translate(0,0,3)
+
+                        .translate(0,0,123)
                         .rotate(time, 0.0, time, time)
                         .scale( 0.5, 0.5,  1)
-                        .transformVector(vector);
+                        .projectVector(vector);
 
                 double x = transformedVector.getX();
                 double y =  transformedVector.getY();

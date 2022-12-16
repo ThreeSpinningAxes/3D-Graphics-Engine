@@ -1,6 +1,7 @@
 package MatrixClasses;
 
 import org.ejml.simple.SimpleMatrix;
+import org.example.Vector;
 
 public class ProjectionMatrix {
     private static final double[][] initialTranslationMatrix = new double[][]{
@@ -33,6 +34,11 @@ public class ProjectionMatrix {
 
     private static double yScaleFactor(double FOVRadians) {
         return 1.0 / (Math.tan(FOVRadians / 2.0));
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new Vector(1,1,1).mult(getProjectionMatrix(0.66666, Math.PI / 2, 1000, 0.1,
+                1)));
     }
 
 
