@@ -1,11 +1,10 @@
 package MatrixClasses;
 
+import org.ejml.MatrixDimensionException;
 import org.ejml.simple.SimpleMatrix;
 import org.example.Vector;
 
 public class VectorTransformMatrixBuilder extends SimpleMatrix {
-
-    SimpleMatrix matrix = SimpleMatrix.identity(4);
 
     public VectorTransformMatrixBuilder() {
         super(identity(4));
@@ -20,6 +19,7 @@ public class VectorTransformMatrixBuilder extends SimpleMatrix {
     }
 
     public VectorTransformMatrixBuilder rotate(double angle, double rotationAxisX, double rotationAxisY, double rotationAxisZ)  {
+        angle = angle * (Math.PI / 180.0);
         return new VectorTransformMatrixBuilder(this.mult(RotationMatrix.getRotatedMatrix(angle, rotationAxisX, rotationAxisY, rotationAxisZ)));
     }
     public VectorTransformMatrixBuilder translate(double xTranslation, double yTranslation, double zTranslation)  {
@@ -28,25 +28,37 @@ public class VectorTransformMatrixBuilder extends SimpleMatrix {
 
     public VectorTransformMatrixBuilder project(double aspectRatio, double FOVRadians, double zFar,  double zNear, double wFactor)  {
         return new VectorTransformMatrixBuilder(this.mult(ProjectionMatrix.getProjectionMatrix(aspectRatio, FOVRadians, zFar,
-                zNear, wFactor).transpose()));
+                zNear, wFactor)));
     }
 
     //this produces a column vector
-    public Vector projectVector(Vector vector) {
-        Vector transformedVector = (vector).getColumnVector();
+    public VectorTransformMatrixBuilder projectVector(Vector vector) {
+        Vector transformedVector = new Vector(this.mult(vector));
         if (transformedVector.getW() != 0) {
             transformedVector.setX(transformedVector.getX() / transformedVector.getW());
             transformedVector.setY(transformedVector.getY() / transformedVector.getW());
             transformedVector.setZ(transformedVector.getZ() / transformedVector.getW());
         }
-        return transformedVector;
+        return new VectorTransformMatrixBuilder(transformedVector);
     }
 
+
     public Vector transformVector(Vector vector) {
-        return new Vector(this.mult(vector));
+        return new Vector(this.mult(new Vector(vector)));
     }
 
     public SimpleMatrix getAsMatrix() {
         return this;
+    }
+
+    public Vector getVector() {
+        if (this.numRows() == 4 && this.numCols() == 1) return new Vector(this);
+        else {
+            throw new MatrixDimensionException();
+        }
+    }
+
+    public VectorTransformMatrixBuilder scaleToWindowScreen(int windowWidth, int windowHeight) {
+        return scale(windowWidth, windowHeight, 1.0);
     }
 }

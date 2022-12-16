@@ -39,7 +39,7 @@ public class RotationMatrix {
     }
 
     private static double eight(double angle, double rotationAxisX, double rotationAxisY, double rotationAxisZ) {
-        return rotationAxisZ * rotationAxisY * (1 - Math.cos(angle)) - rotationAxisX * Math.sin(angle);
+        return rotationAxisZ * rotationAxisY * (1 - Math.cos(angle)) + rotationAxisX * Math.sin(angle);
         //RzRy(1−cosθ)+Rxsinθ
     }
 
@@ -60,7 +60,8 @@ public class RotationMatrix {
         rotatedMatrix[2][1] = eight(angle, rotationAxisX, rotationAxisY, rotationAxisZ);
         rotatedMatrix[2][2] = nine(angle, rotationAxisX, rotationAxisY, rotationAxisZ);
         rotatedMatrix[3][3] = 1.0;
-        return new SimpleMatrix(rotatedMatrix);
+        SimpleMatrix a = new SimpleMatrix(rotatedMatrix);
+        return a;
     }
 
 }

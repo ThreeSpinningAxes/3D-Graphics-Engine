@@ -7,16 +7,16 @@ public class ProjectionMatrix {
     private static final double[][] initialTranslationMatrix = new double[][]{
             {0,0,0,0},
             {0,0,0,0},
-            {0,0,0,1},
-            {0,0,0,0}};
+            {0,0,0,0},
+            {0,0,1,0}};
 
     public static SimpleMatrix getProjectionMatrix(double aspectRatio, double FOVRadians, double zFar,  double zNear, double wFactor) {
         double[][] projectionMatrix = initialTranslationMatrix.clone();
         projectionMatrix[0][0] = xScaleFactor(aspectRatio, FOVRadians);
         projectionMatrix[1][1] = yScaleFactor(FOVRadians);
         projectionMatrix[2][2] = zOffsetScaleFactor(zFar, zNear);
-        projectionMatrix[2][3] = wFactor;
-        projectionMatrix[3][2] = zOffsetAfterScaled(zFar, zNear);
+        projectionMatrix[3][2] = wFactor;
+        projectionMatrix[2][3] = zOffsetAfterScaled(zFar, zNear);
         return new SimpleMatrix(projectionMatrix);
     }
 
@@ -36,10 +36,7 @@ public class ProjectionMatrix {
         return 1.0 / (Math.tan(FOVRadians / 2.0));
     }
 
-    public static void main(String[] args) {
-        System.out.println(new Vector(1,1,1).mult(getProjectionMatrix(0.66666, Math.PI / 2, 1000, 0.1,
-                1)));
-    }
+
 
 
 }
