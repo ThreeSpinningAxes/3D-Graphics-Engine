@@ -1,19 +1,19 @@
 package org.example;
 
-import java.time.Clock;
-import java.time.Instant;
+import MatrixClasses.VectorTransformMatrixBuilder;
+import org.ejml.simple.SimpleMatrix;
+
 import java.util.Arrays;
 
 public class Screen {
     private int windowPixelWidth;
 
     private int windowPixelHeight;
-
     private GameEngine gameEngine;
 
     private Cube cube = new Cube();
-
     private Pyramid pyramid = new Pyramid();
+
 
     private double time = 0;
 
@@ -33,11 +33,13 @@ public class Screen {
             transformedTriangle.clear();
             int i = 0;
             for (Vector vector : triangle.points) {
-                Vector transformedVector = gameEngine.scaleVector(vector, 0.5, 0.5,  1);
-                transformedVector = gameEngine.rotateVector(transformedVector, time, 0, time);
-                transformedVector = gameEngine.translateVector(transformedVector, 0, 0,  3);
-                transformedVector = gameEngine.projectVector(transformedVector);
-
+                Vector transformedVector = new VectorTransformMatrixBuilder()
+                        .project(gameEngine.getAspectRatio(), gameEngine.getFOVRadians(), gameEngine.getZFar(), gameEngine.getzNear(),
+                                gameEngine.getWFactor())
+                        .translate(0,0,3)
+                        .rotate(time, 0.0, time, time)
+                        .scale( 0.5, 0.5,  1)
+                        .transformVector(vector);
 
                 double x = transformedVector.getX();
                 double y =  transformedVector.getY();

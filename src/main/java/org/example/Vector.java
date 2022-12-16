@@ -6,8 +6,6 @@ import java.util.Comparator;
 
 public class Vector extends SimpleMatrix implements Comparator<Vector> {
 
-
-
     public Vector(double x, double y, double z) {
         super(new double[][]{{x, y, z, 1}});
     }

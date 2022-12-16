@@ -1,6 +1,7 @@
 package MatrixClasses;
 
 import org.ejml.simple.SimpleMatrix;
+import org.example.Vector;
 
 public class TranslationMatrix {
 
@@ -9,7 +10,6 @@ public class TranslationMatrix {
             {0,1,0,0},
             {0,0,1,0},
             {0,0,0,1}};
-
 
     public static SimpleMatrix getTranslatedMatrix(double xTranslation, double yTranslation, double zTranslation) {
         double[][] translationMatrix = initialTranslationMatrix.clone();
