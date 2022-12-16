@@ -9,8 +9,6 @@ public class Vector extends SimpleMatrix {
     public Vector(float x, float y, float z) {
         super(4, 1, true ,new float[]{x,y,z,1});
     }
-
-
     public Vector(SimpleMatrix matrix) {
         super(matrix);
     }

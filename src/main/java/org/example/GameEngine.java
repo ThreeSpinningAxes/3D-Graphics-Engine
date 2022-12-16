@@ -1,5 +1,6 @@
 package org.example;
 
+import net.jafama.FastMath;
 import org.ejml.simple.SimpleMatrix;
 
 public class GameEngine {
@@ -74,7 +75,7 @@ public class GameEngine {
     }
 
     public void setFOVRadians() {
-        this.FOVRadians = (float) (this.FOV * (Math.PI / 180.0));
+        this.FOVRadians = (float) (this.FOV * (FastMath.PI / 180.0));
     }
 
 }

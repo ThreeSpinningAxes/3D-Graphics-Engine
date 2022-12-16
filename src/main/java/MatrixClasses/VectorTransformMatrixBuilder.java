@@ -1,5 +1,6 @@
 package MatrixClasses;
 
+import net.jafama.FastMath;
 import org.ejml.MatrixDimensionException;
 import org.ejml.simple.SimpleMatrix;
 import org.example.Vector;
@@ -19,7 +20,7 @@ public class VectorTransformMatrixBuilder extends SimpleMatrix {
     }
 
     public VectorTransformMatrixBuilder rotate(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ)  {
-        angle = (float) (angle * (Math.PI / 180.0));
+        angle = (float) (angle * (FastMath.PI / 180.0));
         return new VectorTransformMatrixBuilder(this.mult(RotationMatrix.getRotatedMatrix(angle, rotationAxisX, rotationAxisY, rotationAxisZ)));
     }
     public VectorTransformMatrixBuilder translate(float xTranslation, float yTranslation, float zTranslation)  {

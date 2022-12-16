@@ -1,5 +1,6 @@
 package MatrixClasses;
 
+import net.jafama.FastMath;
 import org.ejml.simple.SimpleMatrix;
 import org.example.Vector;
 
@@ -11,7 +12,7 @@ public class ProjectionMatrix {
             {0,0,1,0}};
 
     public static SimpleMatrix getProjectionMatrix(float aspectRatio, float FOVRadians, float zFar,  float zNear, float wFactor) {
-        float[][] projectionMatrix = initialTranslationMatrix.clone();
+        float[][] projectionMatrix = initialTranslationMatrix;
         projectionMatrix[0][0] = xScaleFactor(aspectRatio, FOVRadians);
         projectionMatrix[1][1] = yScaleFactor(FOVRadians);
         projectionMatrix[2][2] = zOffsetScaleFactor(zFar, zNear);
@@ -29,10 +30,10 @@ public class ProjectionMatrix {
     }
 
     private static float xScaleFactor(float aspectRatio, float FOVRadians) {
-        return (float) (aspectRatio * (1.0f / Math.tan(FOVRadians / 2.0f)));
+        return (float) (aspectRatio * (1.0f / FastMath.tan(FOVRadians / 2.0f)));
     }
 
     private static float yScaleFactor(float FOVRadians) {
-        return (float) (1.0 / (Math.tan(FOVRadians / 2.0)));
+        return (float) (1.0 / (FastMath.tan(FOVRadians / 2.0)));
     }
 }

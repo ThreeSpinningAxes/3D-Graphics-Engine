@@ -1,50 +1,51 @@
 package MatrixClasses;
 
+import net.jafama.FastMath;
 import org.ejml.simple.SimpleMatrix;
 
 public class RotationMatrix {
 
     private static float one(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ) {
-        return (float) (Math.cos(angle) + rotationAxisX * rotationAxisX * (1 - Math.cos(angle)));
+        return (float) (FastMath.cos(angle) + rotationAxisX * rotationAxisX * (1 - FastMath.cos(angle)));
     }
 
     private static float two(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ) {
-        return (float) (rotationAxisX * rotationAxisY * (1 - Math.cos(angle)) - rotationAxisZ * Math.sin(angle));
+        return (float) (rotationAxisX * rotationAxisY * (1 - FastMath.cos(angle)) - rotationAxisZ * FastMath.sin(angle));
         //RxRy(1−cosθ)−Rzsinθ
     }
 
     private static float three(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ) {
-        return (float) (rotationAxisX * rotationAxisZ * (1 - Math.cos(angle)) + rotationAxisY * Math.sin(angle));
+        return (float) (rotationAxisX * rotationAxisZ * (1 - FastMath.cos(angle)) + rotationAxisY * FastMath.sin(angle));
         //RxRz(1−cosθ)+Rysinθ
     }
 
     private static float four(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ) {
-        return (float) (rotationAxisY * rotationAxisX * (1 - Math.cos(angle)) + rotationAxisZ * Math.sin(angle));
+        return (float) (rotationAxisY * rotationAxisX * (1 - FastMath.cos(angle)) + rotationAxisZ * FastMath.sin(angle));
         //RyRx(1−cosθ)+Rzsinθ
     }
 
     private static float five(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ) {
-        return (float) (Math.cos(angle) + rotationAxisY * rotationAxisY * (1 - Math.cos(angle)));
+        return (float) (FastMath.cos(angle) + rotationAxisY * rotationAxisY * (1 - FastMath.cos(angle)));
         //cosθ+Ry2(1−cosθ)
     }
 
     private static float six(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ) {
-        return (float) (rotationAxisY * rotationAxisZ * (1 - Math.cos(angle)) - rotationAxisX * Math.sin(angle));
+        return (float) (rotationAxisY * rotationAxisZ * (1 - FastMath.cos(angle)) - rotationAxisX * FastMath.sin(angle));
         //RyRz(1−cosθ)−Rxsinθ
     }
 
     private static float seven(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ) {
-        return (float) (rotationAxisZ * rotationAxisX * (1 - Math.cos(angle)) - rotationAxisY * Math.sin(angle));
+        return (float) (rotationAxisZ * rotationAxisX * (1 - FastMath.cos(angle)) - rotationAxisY * FastMath.sin(angle));
         //RzRx(1−cosθ)−Rysinθ
     }
 
     private static float eight(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ) {
-        return (float) (rotationAxisZ * rotationAxisY * (1 - Math.cos(angle)) + rotationAxisX * Math.sin(angle));
+        return (float) (rotationAxisZ * rotationAxisY * (1 - FastMath.cos(angle)) + rotationAxisX * FastMath.sin(angle));
         //RzRy(1−cosθ)+Rxsinθ
     }
 
     private static float nine(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ) {
-        return (float) (Math.cos(angle) + rotationAxisZ * rotationAxisZ * (1 - Math.cos(angle)));
+        return (float) (FastMath.cos(angle) + rotationAxisZ * rotationAxisZ * (1 - FastMath.cos(angle)));
         //cosθ+Rz2(1−cosθ)
     }
 

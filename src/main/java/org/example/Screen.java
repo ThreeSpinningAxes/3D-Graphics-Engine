@@ -2,6 +2,7 @@ package org.example;
 
 import MatrixClasses.ProjectionMatrix;
 import MatrixClasses.VectorTransformMatrixBuilder;
+import net.jafama.FastMath;
 
 import java.util.Arrays;
 
@@ -33,7 +34,6 @@ public class Screen {
     public void renderFrame() {
         time += 0.1;
         for (Triangle triangle : cube.getMesh()) {
-            triangleBuffer.clear();
             int i = 0;
             for (Vector vector : triangle.points) {
                 Vector transformedVector = new VectorTransformMatrixBuilder()
@@ -85,8 +85,8 @@ public class Screen {
     }
 
     private void fillPixelsAsLine(int x1, int y1, int x2, int y2, int hexColor) {
-        int dx = Math.abs(x2 - x1);
-        int dy = Math.abs(y2 - y1);
+        int dx = FastMath.abs(x2 - x1);
+        int dy = FastMath.abs(y2 - y1);
         int sx = (x1 < x2) ? 1 : -1;
         int sy = (y1 < y2) ? 1 : -1;
         int err = dx - dy;
