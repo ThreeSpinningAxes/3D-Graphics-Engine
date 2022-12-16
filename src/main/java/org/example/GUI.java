@@ -80,7 +80,7 @@ public class GUI extends Canvas implements Runnable {
         BufferStrategy bufferStrategy = this.getBufferStrategy();
         if (bufferStrategy == null) {
             //create 3 buffers for triple buffering
-            this.createBufferStrategy(3);
+            this.createBufferStrategy(4);
             return;
         }
 

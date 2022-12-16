@@ -5,20 +5,18 @@ import org.ejml.simple.SimpleMatrix;
 import org.example.Vector;
 
 public class ProjectionMatrix {
-    private static final float[][] initialTranslationMatrix = new float[][]{
-            {0,0,0,0},
-            {0,0,0,0},
-            {0,0,0,0},
-            {0,0,1,0}};
+    SimpleMatrix projectionMatrix;
+    public ProjectionMatrix(float aspectRatio, float FOVRadians, float zFar, float zNear, float wFactor) {
+        projectionMatrix = new SimpleMatrix(4,4);
+        projectionMatrix.set(0,0, xScaleFactor(aspectRatio, FOVRadians));
+        projectionMatrix.set(1,1, yScaleFactor(FOVRadians));
+        projectionMatrix.set(2,2, zOffsetScaleFactor(zFar, zNear));
+        projectionMatrix.set(3,2, wFactor);
+        projectionMatrix.set(2,3, zOffsetAfterScaled(zFar, zNear));
+    }
 
-    public static SimpleMatrix getProjectionMatrix(float aspectRatio, float FOVRadians, float zFar,  float zNear, float wFactor) {
-        float[][] projectionMatrix = initialTranslationMatrix;
-        projectionMatrix[0][0] = xScaleFactor(aspectRatio, FOVRadians);
-        projectionMatrix[1][1] = yScaleFactor(FOVRadians);
-        projectionMatrix[2][2] = zOffsetScaleFactor(zFar, zNear);
-        projectionMatrix[3][2] = wFactor;
-        projectionMatrix[2][3] = zOffsetAfterScaled(zFar, zNear);
-        return new SimpleMatrix(projectionMatrix);
+    public SimpleMatrix getProjectionMatrix() {
+        return this.projectionMatrix;
     }
 
     private static float zOffsetScaleFactor(float zFar,  float zNear) {

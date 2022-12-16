@@ -6,15 +6,19 @@ import java.util.Arrays;
 
 public class ScalingMatrix {
 
-    public static SimpleMatrix getScaledMatrix(float xScale, float yScale, float zScale) {
-        float[][] scaledMatrix = new float[4][4];
+    SimpleMatrix scalingMatrix;
+
+    public ScalingMatrix() {
+        scalingMatrix = new SimpleMatrix(4,4);
+    }
+    public SimpleMatrix getScaledMatrix(float xScale, float yScale, float zScale) {
         if (xScale <= 0) xScale = 1.0f;
         if (yScale <= 0) yScale = 1.0f;
         if (zScale <= 0) zScale = 1.0f;
-        scaledMatrix[0][0] = xScale;
-        scaledMatrix[1][1] = yScale;
-        scaledMatrix[2][2] = zScale;
-        scaledMatrix[3][3] = 1.0f;
-        return new SimpleMatrix(scaledMatrix);
+        scalingMatrix.set(0,0, xScale);
+        scalingMatrix.set(1,1, yScale);
+        scalingMatrix.set(2,2,zScale);
+        scalingMatrix.set(3,3,1.0f);
+        return scalingMatrix;
     }
 }

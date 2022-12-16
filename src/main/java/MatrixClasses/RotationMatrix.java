@@ -5,6 +5,13 @@ import org.ejml.simple.SimpleMatrix;
 
 public class RotationMatrix {
 
+    SimpleMatrix rotationMatrix;
+
+    public RotationMatrix() {
+        this.rotationMatrix = new SimpleMatrix(4,4);
+        rotationMatrix.set(3,3, 1.0f);
+    }
+
     private static float one(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ) {
         return (float) (FastMath.cos(angle) + rotationAxisX * rotationAxisX * (1 - FastMath.cos(angle)));
     }
@@ -49,20 +56,18 @@ public class RotationMatrix {
         //cosθ+Rz2(1−cosθ)
     }
 
-    public static SimpleMatrix getRotatedMatrix(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ) {
-        float[][] rotatedMatrix = new float[4][4];
-        rotatedMatrix[0][0] = one(angle, rotationAxisX, rotationAxisY, rotationAxisZ);
-        rotatedMatrix[0][1] = two(angle, rotationAxisX, rotationAxisY, rotationAxisZ);
-        rotatedMatrix[0][2] = three(angle, rotationAxisX, rotationAxisY, rotationAxisZ);
-        rotatedMatrix[1][0] = four(angle, rotationAxisX, rotationAxisY, rotationAxisZ);
-        rotatedMatrix[1][1] = five(angle, rotationAxisX, rotationAxisY, rotationAxisZ);
-        rotatedMatrix[1][2] = six(angle, rotationAxisX, rotationAxisY, rotationAxisZ);
-        rotatedMatrix[2][0] = seven(angle, rotationAxisX, rotationAxisY, rotationAxisZ);
-        rotatedMatrix[2][1] = eight(angle, rotationAxisX, rotationAxisY, rotationAxisZ);
-        rotatedMatrix[2][2] = nine(angle, rotationAxisX, rotationAxisY, rotationAxisZ);
-        rotatedMatrix[3][3] = 1.0f;
-        SimpleMatrix a = new SimpleMatrix(rotatedMatrix);
-        return a;
+    public  SimpleMatrix getRotatedMatrix(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ) {
+        rotationMatrix.set(0,0,one(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        rotationMatrix.set(0,1,two(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        rotationMatrix.set(0,2,three(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        rotationMatrix.set(1,0,four(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        rotationMatrix.set(1,1,five(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        rotationMatrix.set(1,2,six(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        rotationMatrix.set(2,0,seven(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        rotationMatrix.set(2,1,eight(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        rotationMatrix.set(2,2,nine(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        rotationMatrix.set(3,3,1.0f);
+        return rotationMatrix;
     }
 
 }

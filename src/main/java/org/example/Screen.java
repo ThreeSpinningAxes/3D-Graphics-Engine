@@ -1,14 +1,16 @@
 package org.example;
 
-import MatrixClasses.ProjectionMatrix;
-import MatrixClasses.VectorTransformMatrixBuilder;
+import MatrixClasses.*;
 import net.jafama.FastMath;
+import static MatrixClasses.VectorTransformMatrixBuilder.*;
+import org.ejml.simple.SimpleMatrix;
 
 import java.util.Arrays;
 
 public class Screen {
-    private int windowPixelWidth;
 
+    private static final SimpleMatrix IDENTITY_MATRIX = SimpleMatrix.identity(4);
+    private int windowPixelWidth;
     private int windowPixelHeight;
     private GameEngine gameEngine;
 
@@ -17,6 +19,18 @@ public class Screen {
     private Pyramid pyramid = new Pyramid();
 
     private Triangle triangleBuffer = new Triangle();
+
+    private Vector transformedVectorBuffer;
+
+    private ProjectionMatrix projectionMatrixBuffer;
+
+    private RotationMatrix rotationMatrixBuffer;
+
+    private ScalingMatrix scalingMatrixBuffer;
+
+    private TranslationMatrix translationMatrixBuffer;
+
+    private SimpleMatrix matrixBuffer;
 
 
     private float time = 0;
@@ -29,6 +43,13 @@ public class Screen {
         this.windowPixelHeight = windowPixelHeight;
         this.pixels = new int[this.windowPixelWidth * this.windowPixelHeight];
         this.gameEngine = new GameEngine(this.windowPixelWidth, this.windowPixelHeight, 90.0f, 0.1f, 1000.0f);
+
+        this.projectionMatrixBuffer = new ProjectionMatrix(gameEngine.getAspectRatio(),
+                gameEngine.getFOVRadians(), gameEngine.getzNear(), gameEngine.getZFar(), gameEngine.getWFactor());
+        this.rotationMatrixBuffer = new RotationMatrix();
+        this.scalingMatrixBuffer = new ScalingMatrix();
+        this.translationMatrixBuffer = new TranslationMatrix();
+        this.matrixBuffer = new SimpleMatrix(4,4);
     }
 
     public void renderFrame() {
@@ -36,23 +57,14 @@ public class Screen {
         for (Triangle triangle : cube.getMesh()) {
             int i = 0;
             for (Vector vector : triangle.points) {
-                Vector transformedVector = new VectorTransformMatrixBuilder()
-                        .project(gameEngine.getAspectRatio(),  gameEngine.getFOVRadians(), gameEngine.getZFar(), gameEngine.getzNear(),
-                                gameEngine.getWFactor())
-                        .translate(250.0f, 250.0f, 3.0f)
-                        .scaleToWindowScreen(windowPixelWidth, windowPixelHeight)
-                        .scale(0.5f, 0.5f,  1.0f)
-                        .rotate(time, 0.0f,0,1)
-                        .projectVector(new Vector(vector))
-                        .getVector();
-
-                //float x = transformedVector.getX();
-               // float y = transformedVector.getY();
-                //x += 1.0; x *= (0.5 * (float) this.windowPixelWidth);
-                //y += 1.0; y *= (0.5 * (float) this.windowPixelHeight);
-                //transformedVector.setX(x);
-                //transformedVector.setY(y);
-                triangleBuffer.addPoint(transformedVector, i);
+                matrixBuffer = VectorTransformMatrixBuilder.project(IDENTITY_MATRIX, projectionMatrixBuffer);
+                matrixBuffer = VectorTransformMatrixBuilder.translate(650.0f, 350.0f, 3.0f,
+                                matrixBuffer, translationMatrixBuffer);
+                matrixBuffer = VectorTransformMatrixBuilder.scaleToWindowScreen(windowPixelWidth, windowPixelHeight, matrixBuffer, scalingMatrixBuffer);
+                matrixBuffer = VectorTransformMatrixBuilder.scale(0.5f, 0.5f,  1.0f, matrixBuffer, scalingMatrixBuffer);
+                matrixBuffer = VectorTransformMatrixBuilder.rotate(time, 0.0f,0.0f,1.0f, matrixBuffer, rotationMatrixBuffer);
+                transformedVectorBuffer = VectorTransformMatrixBuilder.projectVector(matrixBuffer, new Vector(vector));
+                triangleBuffer.addPoint(transformedVectorBuffer, i);
                 i++;
             }
             //System.out.println(transformedTriangle.points.length);
