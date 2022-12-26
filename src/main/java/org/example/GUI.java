@@ -80,7 +80,7 @@ public class GUI extends Canvas implements Runnable {
         BufferStrategy bufferStrategy = this.getBufferStrategy();
         if (bufferStrategy == null) {
             //create 3 buffers for triple buffering
-            this.createBufferStrategy(4);
+            this.createBufferStrategy(3);
             return;
         }
 
@@ -89,11 +89,11 @@ public class GUI extends Canvas implements Runnable {
             this.pixelsOfFrameToBeDisplayed[i] = this.screen.getPixel(i);
         }
         Graphics graphics = bufferStrategy.getDrawGraphics();
-        this.screen.clear();
+        this.screen.clearScreen();
         this.screen.renderFrame();
 
-        //graphics.setColor(Color.black);
-        //graphics.fillRect(0,0, windowPixelWidth, windowPixelHeight);
+        graphics.setColor(Color.black);
+        graphics.fillRect(0,0, windowPixelWidth, windowPixelHeight);
         graphics.drawImage(this.bufferedImage, 0, 0, getWidth(), getHeight(), null);
         graphics.dispose();
         bufferStrategy.show();

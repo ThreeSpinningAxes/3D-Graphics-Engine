@@ -1,37 +1,30 @@
 package org.example;
 
-import MatrixClasses.*;
+import MatrixClasses.TransformationMatrix;
 import net.jafama.FastMath;
-import static MatrixClasses.VectorTransformMatrixBuilder.*;
-import org.ejml.simple.SimpleMatrix;
 
 import java.util.Arrays;
 
+import static org.example.Vector.matrixVectorMultiply;
+
 public class Screen {
 
-    private static final SimpleMatrix IDENTITY_MATRIX = SimpleMatrix.identity(4);
     private int windowPixelWidth;
+
     private int windowPixelHeight;
+
     private GameEngine gameEngine;
 
     private Cube cube = new Cube();
+
 
     private Pyramid pyramid = new Pyramid();
 
     private Triangle triangleBuffer = new Triangle();
 
-    private Vector transformedVectorBuffer;
+    private Vector vectorBuffer = new Vector(0,0,0,0);
 
-    private ProjectionMatrix projectionMatrixBuffer;
-
-    private RotationMatrix rotationMatrixBuffer;
-
-    private ScalingMatrix scalingMatrixBuffer;
-
-    private TranslationMatrix translationMatrixBuffer;
-
-    private SimpleMatrix matrixBuffer;
-
+    private TransformationMatrix transformationMatrix;
 
     private float time = 0;
 
@@ -43,40 +36,23 @@ public class Screen {
         this.windowPixelHeight = windowPixelHeight;
         this.pixels = new int[this.windowPixelWidth * this.windowPixelHeight];
         this.gameEngine = new GameEngine(this.windowPixelWidth, this.windowPixelHeight, 90.0f, 0.1f, 1000.0f);
-
-        this.projectionMatrixBuffer = new ProjectionMatrix(gameEngine.getAspectRatio(),
-                gameEngine.getFOVRadians(), gameEngine.getzNear(), gameEngine.getZFar(), gameEngine.getWFactor());
-        this.rotationMatrixBuffer = new RotationMatrix();
-        this.scalingMatrixBuffer = new ScalingMatrix();
-        this.translationMatrixBuffer = new TranslationMatrix();
-        this.matrixBuffer = new SimpleMatrix(4,4);
+        this.transformationMatrix = new TransformationMatrix(gameEngine);
+        //this.transformationMatrix.translate(0.1f, 0.2f, 3);
     }
 
     public void renderFrame() {
-        time += 0.1;
         for (Triangle triangle : cube.getMesh()) {
             int i = 0;
             for (Vector vector : triangle.points) {
-                matrixBuffer = VectorTransformMatrixBuilder.project(IDENTITY_MATRIX, projectionMatrixBuffer);
-                matrixBuffer = VectorTransformMatrixBuilder.translate(650.0f, 350.0f, 3.0f,
-                                matrixBuffer, translationMatrixBuffer);
-                matrixBuffer = VectorTransformMatrixBuilder.scaleToWindowScreen(windowPixelWidth, windowPixelHeight, matrixBuffer, scalingMatrixBuffer);
-                matrixBuffer = VectorTransformMatrixBuilder.scale(0.5f, 0.5f,  1.0f, matrixBuffer, scalingMatrixBuffer);
-                matrixBuffer = VectorTransformMatrixBuilder.rotate(time, 0.0f,0.0f,1.0f, matrixBuffer, rotationMatrixBuffer);
-                transformedVectorBuffer = VectorTransformMatrixBuilder.projectVector(matrixBuffer, new Vector(vector));
-                triangleBuffer.addPoint(transformedVectorBuffer, i);
+                matrixVectorMultiply(transformationMatrix, vector, vectorBuffer);
+                triangleBuffer.addVector(new Vector(vectorBuffer), i);
                 i++;
             }
-            //System.out.println(transformedTriangle.points.length);
-            //Arrays.sort(transformedTriangle.points, (a, b) ->  a.getX() < b.getX() ? 1 : 0);
             fillPixelsAsTriangle(triangleBuffer, 0x4285F4);
+            triangleBuffer.clear();
         }
     }
 
-
-    public void setPixel(int pixelValue, int pixelIndex) {
-        pixels[pixelIndex] = pixelValue;
-    }
 
     public void setPixel(int pixelX, int pixelY, int pixelValue) {
         int pixelN = pixelY * windowPixelWidth + pixelX;
@@ -92,7 +68,7 @@ public class Screen {
         return this.pixels[index];
     }
 
-    public void clear() {
+    public void clearScreen() {
         Arrays.fill(pixels, 0);
     }
 
@@ -121,22 +97,22 @@ public class Screen {
 
     private void fillPixelsAsTriangle(Triangle triangle, int hexColor) {
         fillPixelsAsLine(
-                (int) triangle.points[0].getX(),
-                (int) triangle.points[0].getY(),
-                (int) triangle.points[1].getX(),
-                (int) triangle.points[1].getY(),
+                (int) triangle.points[0].x,
+                (int) triangle.points[0].y,
+                (int) triangle.points[1].x,
+                (int) triangle.points[1].y,
                 hexColor);
         fillPixelsAsLine(
-                (int) triangle.points[1].getX(),
-                (int) triangle.points[1].getY(),
-                (int) triangle.points[2].getX(),
-                (int) triangle.points[2].getY(),
+                (int) triangle.points[1].x,
+                (int) triangle.points[1].y,
+                (int) triangle.points[2].x,
+                (int) triangle.points[2].y,
                 hexColor);
         fillPixelsAsLine(
-                (int) triangle.points[0].getX(),
-                (int) triangle.points[0].getY(),
-                (int) triangle.points[2].getX(),
-                (int) triangle.points[2].getY(),
+                (int) triangle.points[0].x,
+                (int) triangle.points[0].y,
+                (int) triangle.points[2].x,
+                (int) triangle.points[2].y,
                 hexColor);
     }
 }

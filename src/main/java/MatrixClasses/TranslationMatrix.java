@@ -3,20 +3,15 @@ package MatrixClasses;
 import org.ejml.simple.SimpleMatrix;
 import org.example.Vector;
 
-public class TranslationMatrix {
+public class TranslationMatrix extends Matrix4x4{
 
-
-
-    private SimpleMatrix translationMatrix;
-
-    public TranslationMatrix()  {
-        translationMatrix = SimpleMatrix.identity(4);
+    public TranslationMatrix() {
+        this.getTranslatedMatrix(0.0f, 0.0f, 0.0f);
     }
-
-    public  SimpleMatrix getTranslatedMatrix(float xTranslation, float yTranslation, float zTranslation) {
-        translationMatrix.set(0, 3, xTranslation);
-        translationMatrix.set(1, 3, yTranslation);
-        translationMatrix.set(2, 3, zTranslation);
-        return new SimpleMatrix(translationMatrix);
+    public Matrix4x4 getTranslatedMatrix(float xTranslation, float yTranslation, float zTranslation) {
+        this.set(xTranslation, 0, 3);
+        this.set(yTranslation, 1, 3);
+        this.set(zTranslation, 2, 3);
+        return this;
     }
 }

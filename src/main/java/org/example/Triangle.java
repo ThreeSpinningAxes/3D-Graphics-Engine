@@ -13,7 +13,7 @@ public class Triangle {
     public Triangle() {
     }
 
-    public void addPoint(Vector vector, int index) {
+    public void addVector(Vector vector, int index) {
         if (index < 3) {
             points[index] = vector;
         } else {

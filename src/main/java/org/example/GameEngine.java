@@ -6,6 +6,7 @@ import org.ejml.simple.SimpleMatrix;
 public class GameEngine {
 
     private int screenWidth;
+
     private int screenHeight;
 
     private float aspectRatio;
@@ -74,8 +75,13 @@ public class GameEngine {
         return wFactor;
     }
 
+    public int[] getScreenDimensions() {
+        return new int[]{screenWidth, screenHeight};
+    }
+
     public void setFOVRadians() {
         this.FOVRadians = (float) (this.FOV * (FastMath.PI / 180.0));
     }
+
 
 }

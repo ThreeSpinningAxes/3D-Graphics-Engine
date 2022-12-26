@@ -1,6 +1,6 @@
 package org.example;
 
-public class Cube extends Mesh {
+public class Cube extends Shape{
 
     public Cube() {
         //south
