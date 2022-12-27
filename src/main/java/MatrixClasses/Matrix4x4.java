@@ -1,8 +1,5 @@
 package MatrixClasses;
 
-import org.ejml.data.Matrix;
-
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class Matrix4x4 {

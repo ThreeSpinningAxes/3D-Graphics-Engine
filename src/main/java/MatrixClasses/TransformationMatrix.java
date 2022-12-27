@@ -18,29 +18,26 @@ public class TransformationMatrix extends Matrix4x4{
 
     TranslationMatrix translationMatrix;
 
+    Matrix4x4 matrixBuffer;
+
 
     public TransformationMatrix(GameEngine gameEngine) {
 
         //INIT TRANSFORMATION MATRICES
+        super(IDENTITY_MATRIX());
         this.gameEngine = gameEngine;
         this.projectionMatrix = new ProjectionMatrix(gameEngine.getAspectRatio(),
                 gameEngine.getFOVRadians(), gameEngine.getZFar(), gameEngine.getzNear(), gameEngine.getWFactor());
         this.rotationMatrix = new RotationMatrix();
         this.scalingMatrix = new ScalingMatrix();
-        this.scaleToScreenMatrix = new ScalingMatrix();
+        this.scaleToScreenMatrix = new ScalingMatrix(gameEngine.getScreenDimensions());
         this.translationMatrix = new TranslationMatrix();
+        this.matrixBuffer = new Matrix4x4();
 
-        //CONSTRUCT TRANSFORMATION MATRIX
 
-        matrixMultiply(IDENTITY_MATRIX(), projectionMatrix, this);
-        // TRANSLATE
-        matrixMultiply(this, translationMatrix, this);
-        // ROTATE
-        matrixMultiply(this, rotationMatrix, this);
-        //SCALE
-        matrixMultiply(this, scalingMatrix, this);
-        //SCALE TO WINDOW
-        matrixMultiply(this, scaleToScreenMatrix.getScaledMatrix(gameEngine.getScreenDimensions()[0], gameEngine.getScreenDimensions()[1], 1), this);
+        matrixMultiply(this, scalingMatrix.getScaledMatrix(1, 1, 1), this);
+        matrixMultiply(this, scaleToScreenMatrix, this);
+        matrixMultiply(this, this.projectionMatrix, this);
     }
 
     public void scale(float xScale, float yScale, float zScale) {

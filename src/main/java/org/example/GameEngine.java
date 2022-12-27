@@ -1,7 +1,6 @@
 package org.example;
 
 import net.jafama.FastMath;
-import org.ejml.simple.SimpleMatrix;
 
 public class GameEngine {
 

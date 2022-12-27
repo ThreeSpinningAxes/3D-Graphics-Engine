@@ -1,7 +1,6 @@
 package org.example;
 
 import MatrixClasses.Matrix4x4;
-import org.ejml.simple.SimpleMatrix;
 
 public class Vector {
 

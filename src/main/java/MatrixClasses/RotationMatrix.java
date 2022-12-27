@@ -1,7 +1,6 @@
 package MatrixClasses;
 
 import net.jafama.FastMath;
-import org.ejml.simple.SimpleMatrix;
 
 public class RotationMatrix extends Matrix4x4{
 
@@ -64,7 +63,6 @@ public class RotationMatrix extends Matrix4x4{
         this.set(seven(angle, rotationAxisX, rotationAxisY, rotationAxisZ),2,0);
         this.set(eight(angle, rotationAxisX, rotationAxisY, rotationAxisZ),2,1);
         this.set(nine(angle, rotationAxisX, rotationAxisY, rotationAxisZ), 2,2);
-        this.set(1.0f, 3,3);
         return this;
     }
 

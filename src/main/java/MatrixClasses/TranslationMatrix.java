@@ -1,8 +1,5 @@
 package MatrixClasses;
 
-import org.ejml.simple.SimpleMatrix;
-import org.example.Vector;
-
 public class TranslationMatrix extends Matrix4x4{
 
     public TranslationMatrix() {
