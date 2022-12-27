@@ -5,6 +5,7 @@ import net.jafama.FastMath;
 public class RotationMatrix extends Matrix4x4{
 
     public RotationMatrix() {
+        super();
         this.set(1.0f, 3,3);
         this.getRotatedMatrix(0.0f, 0.0f, 0.0f, 1.0f);
     }
@@ -63,6 +64,7 @@ public class RotationMatrix extends Matrix4x4{
         this.set(seven(angle, rotationAxisX, rotationAxisY, rotationAxisZ),2,0);
         this.set(eight(angle, rotationAxisX, rotationAxisY, rotationAxisZ),2,1);
         this.set(nine(angle, rotationAxisX, rotationAxisY, rotationAxisZ), 2,2);
+        this.set(1.0f, 3,3);
         return this;
     }
 

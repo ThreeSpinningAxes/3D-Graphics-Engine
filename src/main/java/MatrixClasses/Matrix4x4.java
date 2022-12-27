@@ -38,15 +38,28 @@ public class Matrix4x4 {
         return result;
     }
 
+    public Matrix4x4 mult(Matrix4x4 A) {
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                for (int k = 0; k < 4; k++) {
+                    this.matrix[i * 4 + j] += this.matrix[i * 4 + k] * A.matrix[k * 4 + j];
+                }
+            }
+        }
+        return this;
+    }
+
+    private int mapRowColToIndex(int row, int col) {
+        return 4 * row + col;
+    }
+
     public static Matrix4x4 IDENTITY_MATRIX() {
         return new Matrix4x4(new float[]{
                 1.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 1.0f, 0.0f,
                 0.0f, 0.0f, 0.0f, 1.0f});
-    }
-    private int mapRowColToIndex(int row, int col) {
-        return 4 * row + col;
     }
 
     public static void main(String[] args) {

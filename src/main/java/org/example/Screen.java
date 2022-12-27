@@ -22,7 +22,7 @@ public class Screen {
 
     private Triangle triangleBuffer = new Triangle();
 
-    private Vector vectorBuffer = new Vector(0,0,0,0);
+    private Vector vectorBuffer = new Vector();
 
     private TransformationMatrix transformationMatrix;
 
@@ -37,7 +37,7 @@ public class Screen {
         this.pixels = new int[this.windowPixelWidth * this.windowPixelHeight];
         this.gameEngine = new GameEngine(this.windowPixelWidth, this.windowPixelHeight, 90.0f, 0.1f, 1000.0f);
         this.transformationMatrix = new TransformationMatrix(gameEngine);
-        //this.transformationMatrix.translate(0.1f, 0.2f, 3);
+        this.transformationMatrix.scale(1.0f, 1.0f, 1.0f);
     }
 
     public void renderFrame() {

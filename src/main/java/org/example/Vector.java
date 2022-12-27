@@ -25,6 +25,8 @@ public class Vector {
         this.w = w;
     }
 
+    public Vector(){}
+
     public Vector(Vector vector) {
         this(vector.x, vector.y, vector.z, vector.w);
     }
@@ -41,6 +43,8 @@ public class Vector {
             result.x /= result.w;
             result.y /= result.w;
             result.z /= result.w;
+        } else {
+            result.w = V.w;
         }
 
         return result;

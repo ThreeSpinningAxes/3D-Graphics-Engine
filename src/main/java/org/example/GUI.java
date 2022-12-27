@@ -103,7 +103,7 @@ public class GUI extends Canvas implements Runnable {
     }
 
     public static void main(String[] args) {
-        GUI gui = new GUI(600, 400);
+        GUI gui = new GUI(1024, 960);
         gui.start();
     }
 }

@@ -7,11 +7,13 @@ public class ProjectionMatrix extends Matrix4x4 {
 
     public ProjectionMatrix(float aspectRatio, float FOVRadians, float zFar, float zNear, float wFactor) {
 
+        super();
         this.set(xScaleFactor(aspectRatio, FOVRadians), 0,0);
         this.set(yScaleFactor(FOVRadians), 1,1);
         this.set(zOffsetScaleFactor(zFar, zNear), 2,2);
         this.set(wFactor, 3,2);
         this.set(zOffsetAfterScaled(zFar, zNear), 2,3);
+
     }
 
     private static float zOffsetScaleFactor(float zFar,  float zNear) {
