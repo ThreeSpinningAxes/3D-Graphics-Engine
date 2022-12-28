@@ -40,14 +40,14 @@ public class Screen {
         this.transformationMatrix = new TransformationMatrix(gameEngine);
         //this.transformationMatrix.rotate((float) Math.PI/4, 0,1, 0);
         //this.transformationMatrix.scale(0.5f, 0.5f, 1.0f);
-        //this.transformationMatrix.translate(0.3f, 0.0f, 0.0f);
+        //this.transformationMatrix.translate(0.5f, 0.0f, 0.0f);
 
 
     }
 
     public void renderFrame() {
-        time += 0.00001f;
-        transformationMatrix.rotate(0.0003f, 7,0,1);
+       //time += 0.001f;
+        //transformationMatrix.rotateX(time , time *0.5f);
         for (Triangle triangle : cube.getMesh()) {
             int i = 0;
             for (Vector vector : triangle.points) {
@@ -56,7 +56,8 @@ public class Screen {
                 vectorBuffer.clear();
                 i++;
             }
-            fillPixelsAsTriangle(triangleBuffer, 0x4285F4);
+            //if (triangleBuffer.canSeeTriangle())
+                fillPixelsAsTriangle(triangleBuffer, 0x4285F4);
             triangleBuffer.clear();
         }
     }

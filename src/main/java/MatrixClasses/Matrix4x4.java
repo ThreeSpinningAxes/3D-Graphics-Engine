@@ -73,6 +73,17 @@ public class Matrix4x4 {
                 0.0f, 0.0f, 0.0f, 1.0f});
     }
 
+    public void transpose() {
+        float temp;
+        for (int i = 0; i < 3; i++) {
+            for (int j = i + 1; j < 4; j++) {
+                temp = this.get(i, j);
+                this.set(i, j, this.get(j, i));
+                this.set(j, i, temp);
+            }
+        }
+    }
+
     public void clear() {
         Arrays.fill(matrix, 0.0f);
     }

@@ -1,10 +1,10 @@
 package MatrixClasses;
 
-public class ScalingMatrix extends Matrix4x4{
+public class ScalingMatrix extends Matrix4x4 {
 
     public ScalingMatrix() {
         super();
-        this.getScaledMatrix(0.5f, 0.5f, 1.0f);
+        this.getScaledMatrix(1.0f, 1.0f, 1.0f);
     }
 
     public ScalingMatrix(int[] dimensions) {

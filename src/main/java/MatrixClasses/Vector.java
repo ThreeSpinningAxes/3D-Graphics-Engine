@@ -41,6 +41,30 @@ public class Vector {
         return result;
     }
 
+
+    public static float getMagnitude(float x, float y, float z) {
+        return (float) Math.sqrt(x * x + y * y + z * z);
+    }
+
+    //smaller vector for A
+    public static Vector getNormal(Vector A, Vector B) {
+        Vector V = new Vector();
+        V.x = A.y * B.z - A.z * B.y;
+        V.y = A.z * B.x - A.x * B.z;
+        V.z = A.x * B.y - A.y * B.x;
+        float magnitude = getMagnitude(V.x,V.y,V.z);
+        V.x /= magnitude; V.y /= magnitude; V.z /= magnitude;
+        return V;
+    }
+    //smaller vector for A
+    public static Vector getLine(Vector A, Vector B) {
+        Vector V = new Vector();
+        V.x = B.x - A.x;
+        V.y = B.y - A.y;
+        V.z = B.z - A.z;
+        return V;
+    }
+
     public void clear() {
         this.x = 0.0f;
         this.y = 0.0f;
