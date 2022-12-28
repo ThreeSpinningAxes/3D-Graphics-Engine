@@ -6,7 +6,7 @@ public class RotationMatrix extends Matrix4x4{
 
     public RotationMatrix() {
         super();
-        this.set(1.0f, 3,3);
+        this.set(3, 3, 1.0f);
         this.getRotatedMatrix(0.0f, 0.0f, 0.0f, 1.0f);
     }
 
@@ -55,16 +55,16 @@ public class RotationMatrix extends Matrix4x4{
     }
 
     public Matrix4x4 getRotatedMatrix(float angle, float rotationAxisX, float rotationAxisY, float rotationAxisZ) {
-        this.set(one(angle, rotationAxisX, rotationAxisY, rotationAxisZ),0,0);
-        this.set(two(angle, rotationAxisX, rotationAxisY, rotationAxisZ),0,1);
-        this.set(three(angle, rotationAxisX, rotationAxisY, rotationAxisZ),0,2);
-        this.set(four(angle, rotationAxisX, rotationAxisY, rotationAxisZ), 1,0);
-        this.set(five(angle, rotationAxisX, rotationAxisY, rotationAxisZ), 1,1);
-        this.set(six(angle, rotationAxisX, rotationAxisY, rotationAxisZ),1,2);
-        this.set(seven(angle, rotationAxisX, rotationAxisY, rotationAxisZ),2,0);
-        this.set(eight(angle, rotationAxisX, rotationAxisY, rotationAxisZ),2,1);
-        this.set(nine(angle, rotationAxisX, rotationAxisY, rotationAxisZ), 2,2);
-        this.set(1.0f, 3,3);
+        this.set(0, 0, one(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        this.set(1, 0, two(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        this.set(2, 0, three(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        this.set(0, 1, four(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        this.set(1, 1, five(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        this.set(2, 1, six(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        this.set(0, 2, seven(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        this.set(1, 2, eight(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        this.set(2, 2, nine(angle, rotationAxisX, rotationAxisY, rotationAxisZ));
+        this.set(3, 3, 1.0f);
         return this;
     }
 

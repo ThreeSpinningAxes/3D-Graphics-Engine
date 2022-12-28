@@ -1,11 +1,12 @@
 package org.example;
 
 import MatrixClasses.TransformationMatrix;
+import MatrixClasses.Vector;
 import net.jafama.FastMath;
 
 import java.util.Arrays;
 
-import static org.example.Vector.matrixVectorMultiply;
+import static MatrixClasses.Vector.multiplyVectorWithMatrix;
 
 public class Screen {
 
@@ -37,15 +38,22 @@ public class Screen {
         this.pixels = new int[this.windowPixelWidth * this.windowPixelHeight];
         this.gameEngine = new GameEngine(this.windowPixelWidth, this.windowPixelHeight, 90.0f, 0.1f, 1000.0f);
         this.transformationMatrix = new TransformationMatrix(gameEngine);
-        this.transformationMatrix.scale(1.0f, 1.0f, 1.0f);
+        //this.transformationMatrix.rotate((float) Math.PI/4, 0,1, 0);
+        //this.transformationMatrix.scale(0.5f, 0.5f, 1.0f);
+        //this.transformationMatrix.translate(0.3f, 0.0f, 0.0f);
+
+
     }
 
     public void renderFrame() {
+        time += 0.00001f;
+        transformationMatrix.rotate(0.0003f, 7,0,1);
         for (Triangle triangle : cube.getMesh()) {
             int i = 0;
             for (Vector vector : triangle.points) {
-                matrixVectorMultiply(transformationMatrix, vector, vectorBuffer);
-                triangleBuffer.addVector(new Vector(vectorBuffer), i);
+                multiplyVectorWithMatrix(vector, transformationMatrix, vectorBuffer);
+                triangleBuffer.addVector(vectorBuffer.getCopy(), i);
+                vectorBuffer.clear();
                 i++;
             }
             fillPixelsAsTriangle(triangleBuffer, 0x4285F4);
@@ -55,9 +63,9 @@ public class Screen {
 
 
     public void setPixel(int pixelX, int pixelY, int pixelValue) {
-        int pixelN = pixelY * windowPixelWidth + pixelX;
-        if (pixelN >= pixels.length || pixelN < 0) return;
-        this.pixels[pixelY * windowPixelWidth + pixelX] = pixelValue;
+        int index = pixelY * windowPixelWidth + pixelX;
+        if (index > 0 && index < pixels.length)
+            this.pixels[index] = pixelValue;
     }
 
     public int getPixel(int pixelX, int pixelY) {
@@ -72,7 +80,10 @@ public class Screen {
         Arrays.fill(pixels, 0);
     }
 
-    private void fillPixelsAsLine(int x1, int y1, int x2, int y2, int hexColor) {
+    private void fillPixelsAsLine(int x0, int y0, int x2, int y2, int hexColor) {
+        int x1 = x0;
+        int y1 = y0;
+        
         int dx = FastMath.abs(x2 - x1);
         int dy = FastMath.abs(y2 - y1);
         int sx = (x1 < x2) ? 1 : -1;
@@ -109,10 +120,10 @@ public class Screen {
                 (int) triangle.points[2].y,
                 hexColor);
         fillPixelsAsLine(
-                (int) triangle.points[0].x,
-                (int) triangle.points[0].y,
                 (int) triangle.points[2].x,
                 (int) triangle.points[2].y,
+                (int) triangle.points[0].x,
+                (int) triangle.points[0].y,
                 hexColor);
     }
 }

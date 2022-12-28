@@ -1,6 +1,8 @@
 package org.example;
 
-public class Cube extends Shape{
+import MatrixClasses.Vector;
+
+public class Cube extends Mesh {
 
     public Cube() {
         //south

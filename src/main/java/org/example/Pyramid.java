@@ -1,5 +1,7 @@
 package org.example;
 
+import MatrixClasses.Vector;
+
 public class Pyramid extends Mesh {
 
     public Pyramid() {

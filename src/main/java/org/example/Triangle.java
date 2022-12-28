@@ -1,5 +1,7 @@
 package org.example;
 
+import MatrixClasses.Vector;
+
 import java.util.Arrays;
 
 public class Triangle {
