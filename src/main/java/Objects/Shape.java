@@ -1,4 +1,6 @@
-package org.example;
+package Objects;
+
+import Objects.Mesh;
 
 public class Shape extends Mesh {
 

@@ -11,7 +11,6 @@ public class ProjectionMatrix extends Matrix4x4 {
         this.set(2, 3, wFactor);
         this.set(3, 2, zOffsetAfterScaled(zFar, zNear));
         this.set(3,3,1);
-
     }
 
     private static float zOffsetScaleFactor(float zFar,  float zNear) {

@@ -23,7 +23,8 @@ public class Vector {
         this.w = w;
     }
 
-    public Vector(){}
+    public Vector(){
+    }
 
 
     public static Vector multiplyVectorWithMatrix(Vector V, Matrix4x4 A, Vector result) {
@@ -69,7 +70,7 @@ public class Vector {
         this.x = 0.0f;
         this.y = 0.0f;
         this.z = 0.0f;
-        this.w = 1.0f;
+        this.w = 0.0f;
     }
 
     public Vector getCopy() {

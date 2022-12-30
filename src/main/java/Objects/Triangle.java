@@ -1,4 +1,4 @@
-package org.example;
+package Objects;
 
 import MatrixClasses.Vector;
 
@@ -19,11 +19,7 @@ public class Triangle {
     }
 
     public void addVector(Vector vector, int index) {
-        if (index < 3) {
             points[index] = vector;
-        } else {
-            throw new ArrayIndexOutOfBoundsException();
-        }
     }
 
     //can optimize for every 2 points rather then first getting all 3 vectors
@@ -39,9 +35,9 @@ public class Triangle {
     }
 
     public void clear() {
-        this.points[0] = null;
-        this.points[1] = null;
-        this.points[2] = null;
+        this.points[0].x = 0; this.points[0].y = 0; this.points[0].z = 0; this.points[0].w = 0.0f;
+        this.points[1].x = 0; this.points[1].y = 0; this.points[1].z = 0; this.points[1].w = 0.0f;
+        this.points[2].x = 0; this.points[2].y = 0; this.points[2].z = 0; this.points[2].w = 0.0f;
     }
 
 }

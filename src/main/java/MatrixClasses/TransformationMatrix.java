@@ -1,7 +1,7 @@
 package MatrixClasses;
 
 import org.example.GameEngine;
-import org.example.Triangle;
+import Objects.Triangle;
 
 import static MatrixClasses.Vector.multiplyVectorWithMatrix;
 
@@ -20,6 +20,8 @@ public class TransformationMatrix extends Matrix4x4 {
 
     TranslationMatrix translationMatrix;
 
+    TranslationMatrix userTranslationMatrix;
+
     //ArrayList<FloatBuffer> buffers;
     Matrix4x4 buffer;
 
@@ -36,7 +38,6 @@ public class TransformationMatrix extends Matrix4x4 {
 
     public TransformationMatrix(GameEngine gameEngine) {
         super(IDENTITY_MATRIX());
-
         this.gameEngine = gameEngine;
         this.projectionMatrix = new ProjectionMatrix(gameEngine.getAspectRatio(),
                 gameEngine.getFOVRadians(), gameEngine.getZFar(), gameEngine.getzNear(), gameEngine.getWFactor());
@@ -44,23 +45,19 @@ public class TransformationMatrix extends Matrix4x4 {
         this.scalingMatrix = new ScalingMatrix();
         this.scaleToScreenMatrix = new ScalingMatrix(gameEngine.getScreenDimensions());
         this.translationMatrix = new TranslationMatrix();
+        this.userTranslationMatrix = new TranslationMatrix();
         this.xRotation = new Matrix4x4();
+        this.xRotation = getXRotationMatrix(0.0f);
         //this.yRotation = getYRotationMatrix(0.0f, yRotation);
         this.zRotation = new Matrix4x4();
+        this.zRotation = getZRotationMatrix(0.0f);
 
         ///////////////////////////////////////////
         this.buffer = new Matrix4x4();
         this.vectorBuffer = new Vector();
-        this.triangleBuffer = new Triangle();
+        this.triangleBuffer = new Triangle(new Vector[]{new Vector(), new Vector(), new Vector()});
         this.transformationMatrix = IDENTITY_MATRIX();
         ///////////////////////////////////////////
-
-        transformationMatrix
-                .mult(getZRotationMatrix(0.0), buffer)
-                .mult(getXRotationMatrix(0.0), buffer)
-                .mult(translationMatrix, buffer);
-        this.applyProjectionAndOtherStuff();
-
     }
 
     public void scale(float xScale, float yScale, float zScale) {
@@ -68,19 +65,12 @@ public class TransformationMatrix extends Matrix4x4 {
     }
 
     public void translate(float xTranslation, float yTranslation, float zTranslation) {
-        translationMatrix.getTranslatedMatrix(xTranslation, yTranslation, zTranslation);
+        userTranslationMatrix.getTranslatedMatrix(xTranslation, yTranslation, zTranslation);
     }
 
-    public void rotate(float angle, float angle2) {
-        this.matrix = IDENTITY_MATRIX().matrix;
-        this
-                .mult(getZRotationMatrix(angle), buffer)
-                .mult(getXRotationMatrix(angle2), buffer)
-                .mult(translationMatrix.getTranslatedMatrix(0.0f,0.0f,3.0f), buffer)
-                .mult(projectionMatrix, buffer)
-                .mult(translationMatrix.getTranslatedMatrix(1.0f,1.0f,0.0f), buffer)
-                .mult(scalingMatrix, buffer)
-                .mult(scaleToScreenMatrix, buffer);
+    public void rotate(float angleX, float angleZ) {
+        getZRotationMatrix(angleZ);
+        //getXRotationMatrix(angleZ);
     }
 
     public Matrix4x4 getXRotationMatrix(double angleRadians) {
@@ -114,6 +104,50 @@ public class TransformationMatrix extends Matrix4x4 {
     }
 
 
+
+    public Matrix4x4 getTransformationMatrix() {
+        transformationMatrix = IDENTITY_MATRIX(); //reset matrix
+        transformationMatrix
+                .mult(zRotation, buffer)
+                .mult(translationMatrix.getTranslatedMatrix(0.0f, 0.0f, 3.0f), buffer);
+                //.mult(zRotation, buffer);
+                //.mult(scalingMatrix.getScaledMatrix(1.0f, 1.0f, 1.0f), buffer);
+        return transformationMatrix;
+    }
+    public void transformTriangle(Triangle triangle) {
+        this.matrix = IDENTITY_MATRIX().matrix;
+        triangleBuffer.clear();
+        getTransformationMatrix();
+        int i = 0;
+        for (Vector vector : triangle.points) {
+            multiplyVectorWithMatrix(vector, transformationMatrix, vectorBuffer);
+            triangleBuffer.addVector(vectorBuffer.getCopy(), i);
+            vectorBuffer.clear();
+             i++;
+        }
+    }
+
+    public boolean triangleCanBeDrawn() {
+        if (triangleBuffer.canSeeTriangle()) {
+            return true;
+        }
+        triangleBuffer.clear();
+        return false;
+    }
+
+    public Triangle getRenderedTriangle() {
+        this.mult(transformationMatrix, buffer); //sets matrix to transformation matrix
+        //construct matrix
+        applyProjection();
+        translateToScreen();
+        scaleToScreen();
+        scaleCoordinateSystem();
+        for (Vector vector : triangleBuffer.points) {
+            multiplyVectorWithMatrix(vector, this, vector);
+        }
+        return triangleBuffer;
+    }
+
     public void applyProjection() {
         this.mult(projectionMatrix, buffer);
     }
@@ -127,43 +161,16 @@ public class TransformationMatrix extends Matrix4x4 {
     }
 
     public void scaleCoordinateSystem() {
-        this.mult(scalingMatrix.getScaledMatrix(0.5f,0.5f,0.5f), buffer);
+        this.mult(scalingMatrix.getScaledMatrix(0.5f,0.5f,1.0f), buffer);
     }
 
-    public Matrix4x4 getTransformationMatrix() {
-        transformationMatrix = IDENTITY_MATRIX(); //reset matrix
-        transformationMatrix
-                .mult(translationMatrix, buffer)
-                .mult(zRotation, buffer)
-                .mult(xRotation, buffer)
-                .mult(scalingMatrix, buffer);
-        return transformationMatrix;
+    private void resetMatricesAndClearBuffers() {
+        this.triangleBuffer.clear();
+        this.vectorBuffer.clear();
+        this.translationMatrix.getTranslatedMatrix(0.0f,0.0f,0.0f);
+        this.scalingMatrix.getScaledMatrix(1.0f,1.0f,1.0f);
+        this.xRotation = getXRotationMatrix(0.0f);
+        this.zRotation = getZRotationMatrix(0.0f);
     }
-    public void transformTriangle(Triangle triangle) {
-        int i = 0;
-        for (Vector vector : triangle.points) {
-            multiplyVectorWithMatrix(vector, transformationMatrix, vectorBuffer);
-            triangleBuffer.addVector(vectorBuffer.getCopy(), i);
-            vectorBuffer.clear();
-            i++;
-        }
-    }
-
-    public boolean triangleCanBeDrawn() {
-        return triangleBuffer.canSeeTriangle();
-    }
-
-    public void applyProjectionAndOtherStuff() {
-        this.mult(transformationMatrix, buffer); //sets matrix to transformation matrix
-        applyProjection();
-        translateToScreen();
-        scaleToScreen();
-        scaleCoordinateSystem();
-    }
-
-    private void clearBuffers() {
-
-    }
-
 
 }

@@ -71,7 +71,9 @@ public class GUI extends Canvas implements Runnable {
     public void run() {
         while (running) {
             update();
+            long time = System.currentTimeMillis();
             renderFrame();
+            System.out.println(1000 / (System.currentTimeMillis() - time +0.00000001));
         }
     }
     public void renderFrame() {

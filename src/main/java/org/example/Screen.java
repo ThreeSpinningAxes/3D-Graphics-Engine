@@ -2,6 +2,9 @@ package org.example;
 
 import MatrixClasses.TransformationMatrix;
 import MatrixClasses.Vector;
+import Objects.Cube;
+import Objects.Pyramid;
+import Objects.Triangle;
 import net.jafama.FastMath;
 
 import java.util.Arrays;
@@ -41,24 +44,19 @@ public class Screen {
         //this.transformationMatrix.rotate((float) Math.PI/4, 0,1, 0);
         //this.transformationMatrix.scale(0.5f, 0.5f, 1.0f);
         //this.transformationMatrix.translate(0.5f, 0.0f, 0.0f);
-
-
     }
 
     public void renderFrame() {
-       //time += 0.001f;
-        //transformationMatrix.rotateX(time , time *0.5f);
+        //apply transformations
+        time += 0.000001f;
+        transformationMatrix.rotate(time,time);
+
         for (Triangle triangle : cube.getMesh()) {
-            int i = 0;
-            for (Vector vector : triangle.points) {
-                multiplyVectorWithMatrix(vector, transformationMatrix, vectorBuffer);
-                triangleBuffer.addVector(vectorBuffer.getCopy(), i);
-                vectorBuffer.clear();
-                i++;
-            }
-            //if (triangleBuffer.canSeeTriangle())
-                fillPixelsAsTriangle(triangleBuffer, 0x4285F4);
-            triangleBuffer.clear();
+            //apply initial transformations to triangle
+            transformationMatrix.transformTriangle(triangle);
+            //if (transformationMatrix.triangleCanBeDrawn()) {
+                fillPixelsAsTriangle(transformationMatrix.getRenderedTriangle(), 0x4285F4);
+            //}
         }
     }
 
