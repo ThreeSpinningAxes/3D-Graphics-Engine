@@ -49,7 +49,7 @@ public class Screen {
     public void renderFrame() {
         //apply transformations
         time += 0.000001f;
-        transformationMatrix.rotate(time,time);
+        transformationMatrix.rotate(time,time * 0.5f);
 
         for (Triangle triangle : cube.getMesh()) {
             //apply initial transformations to triangle

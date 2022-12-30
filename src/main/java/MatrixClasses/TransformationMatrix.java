@@ -70,7 +70,7 @@ public class TransformationMatrix extends Matrix4x4 {
 
     public void rotate(float angleX, float angleZ) {
         getZRotationMatrix(angleZ);
-        //getXRotationMatrix(angleZ);
+        //getXRotationMatrix(angleX);
     }
 
     public Matrix4x4 getXRotationMatrix(double angleRadians) {
@@ -78,8 +78,8 @@ public class TransformationMatrix extends Matrix4x4 {
         this.xRotation.set(0,0,1);
         this.xRotation.set(1,1, (float) Math.cos(angleRadians));
         this.xRotation.set(2,2, (float) Math.cos(angleRadians));
-        this.xRotation.set(1,2, (float) Math.sin(angleRadians));
-        this.xRotation.set(2,1, (float) (-1*Math.sin(angleRadians)));
+        this.xRotation.set(1,2, (float) (-1.0f * Math.sin(angleRadians)));
+        this.xRotation.set(2,1, (float) (Math.sin(angleRadians)));
         this.xRotation.set(3,3,1);
         return this.xRotation;
     }
@@ -90,13 +90,14 @@ public class TransformationMatrix extends Matrix4x4 {
         matrix.set(2,2, (float) Math.cos(angleRadians));
         matrix.set(0,2, (float) Math.sin(angleRadians));
         matrix.set(2,0, (float) (-1*Math.sin(angleRadians)));
+        this.xRotation.set(3,3,1);
         return matrix;
     }
 
     public Matrix4x4 getZRotationMatrix(double angleRadians) {
         this.zRotation.set(0,0, (float) Math.cos(angleRadians));
-        this.zRotation.set(0,1, (float) Math.sin(angleRadians));
-        this.zRotation.set(1,0, (float) (-1*Math.sin(angleRadians)));
+        this.zRotation.set(0,1, (float) (-1 * Math.sin(angleRadians)));
+        this.zRotation.set(1,0, (float) (Math.sin(angleRadians)));
         this.zRotation.set(1,1, (float) Math.cos(angleRadians));
         this.zRotation.set(2,2,1);
         this.zRotation.set(3,3,1);
@@ -106,12 +107,13 @@ public class TransformationMatrix extends Matrix4x4 {
 
 
     public Matrix4x4 getTransformationMatrix() {
-        transformationMatrix = IDENTITY_MATRIX(); //reset matrix
+        transformationMatrix.matrix = IDENTITY_MATRIX().matrix; //reset matrix
         transformationMatrix
+
+                .mult(translationMatrix.getTranslatedMatrix(0.0f, 0.0f, 3.0f), buffer)
                 .mult(zRotation, buffer)
-                .mult(translationMatrix.getTranslatedMatrix(0.0f, 0.0f, 3.0f), buffer);
-                //.mult(zRotation, buffer);
-                //.mult(scalingMatrix.getScaledMatrix(1.0f, 1.0f, 1.0f), buffer);
+                .mult(xRotation, buffer);
+
         return transformationMatrix;
     }
     public void transformTriangle(Triangle triangle) {
@@ -120,7 +122,7 @@ public class TransformationMatrix extends Matrix4x4 {
         getTransformationMatrix();
         int i = 0;
         for (Vector vector : triangle.points) {
-            multiplyVectorWithMatrix(vector, transformationMatrix, vectorBuffer);
+            multiplyVectorWithMatrix(vector, this.transformationMatrix, vectorBuffer);
             triangleBuffer.addVector(vectorBuffer.getCopy(), i);
             vectorBuffer.clear();
              i++;
