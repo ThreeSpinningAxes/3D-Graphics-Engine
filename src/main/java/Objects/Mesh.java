@@ -1,6 +1,7 @@
 package Objects;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Mesh {
 
@@ -12,6 +13,12 @@ public class Mesh {
 
     public ArrayList<Triangle> getMesh() {
         return this.mesh;
+    }
+
+    public static int getRandomHexColor() {
+        Random random = new Random();
+        return random.nextInt(0xffffff + 1);
+
     }
 
 }

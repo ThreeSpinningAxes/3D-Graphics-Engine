@@ -10,7 +10,7 @@ public class ProjectionMatrix extends Matrix4x4 {
         this.set(2, 2, zOffsetScaleFactor(zFar, zNear));
         this.set(2, 3, wFactor);
         this.set(3, 2, zOffsetAfterScaled(zFar, zNear));
-        //this.set(3,3,1);
+        this.set(3,3,1);
     }
 
     private static float zOffsetScaleFactor(float zFar,  float zNear) {
@@ -18,7 +18,7 @@ public class ProjectionMatrix extends Matrix4x4 {
     }
 
     private static float zOffsetAfterScaled(float zFar,  float zNear) {
-        return (zNear * (-1.0f * zOffsetScaleFactor(zFar, zNear)));
+        return (-1.0f * zFar * zNear) / (zFar - zNear);
     }
 
     private static float xScaleFactor(float aspectRatio, float FOVRadians) {

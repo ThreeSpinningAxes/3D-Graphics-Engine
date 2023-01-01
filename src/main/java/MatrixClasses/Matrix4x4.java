@@ -28,14 +28,12 @@ public class Matrix4x4 {
 
 
     public Matrix4x4 mult(Matrix4x4 A, Matrix4x4 buffer) {
-        buffer.clear();
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 buffer.set(i, j, dotProduct(i, j, this, A));
             }
         }
         this.matrix = buffer.matrix.clone();
-        buffer.clear();
         return this;
     }
 
@@ -49,16 +47,13 @@ public class Matrix4x4 {
         return result;
     }
 
-    //one element
-    public static float dotProduct(int rowFromA, int colFromB, Matrix4x4 A, Matrix4x4 B) {
+    private static float dotProduct(int rowFromA, int colFromB, Matrix4x4 A, Matrix4x4 B) {
         float k = 0.0f;
         for (int i = 0; i < 4; i++) {
             k += A.get(rowFromA, i) * B.get(i, colFromB);
         }
         return k;
     }
-
-
 
 
     private int mapRowColToIndex(int row, int col) {

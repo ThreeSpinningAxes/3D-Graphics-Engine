@@ -2,7 +2,7 @@ package org.example;
 
 import net.jafama.FastMath;
 
-public class GameEngine {
+public class GameSettings {
 
     private int screenWidth;
 
@@ -20,7 +20,7 @@ public class GameEngine {
 
     private float wFactor = 1.0f;
 
-    public GameEngine(int screenWidth, int screenHeight, float FOV, float zNear, float zFar) {
+    public GameSettings(int screenWidth, int screenHeight, float FOV, float zNear, float zFar) {
         setScreenDimensions(screenWidth, screenHeight);
         setAspectRatio();
         setFOV(FOV);
@@ -28,8 +28,8 @@ public class GameEngine {
         setZFar(zFar);
     }
 
-    public GameEngine defaultGameEngine(int screenWidth, int screenHeight) {
-        return new GameEngine(screenWidth, screenHeight, 90.0f, 0.01f, 1000);
+    public GameSettings defaultGameEngine(int screenWidth, int screenHeight) {
+        return new GameSettings(screenWidth, screenHeight, 90.0f, 0.01f, 1000);
     }
 
     private void setAspectRatio() {

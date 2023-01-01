@@ -1,12 +1,17 @@
 package org.example;
 
+import Objects.Triangle;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.ArrayList;
 
-public class GUI extends Canvas implements Runnable {
+public class GUI extends Canvas implements Runnable, KeyListener {
 
     private int windowPixelWidth;
     private int windowPixelHeight;
@@ -23,6 +28,9 @@ public class GUI extends Canvas implements Runnable {
 
     BufferedImage bufferedImage;
 
+
+    ArrayList<Float> input = new ArrayList<>();
+
     //used to perform calculations on the pixels for the current frame of the screen
     private int[] pixelsOfFrameToBeDisplayed;
 
@@ -34,6 +42,10 @@ public class GUI extends Canvas implements Runnable {
         initJFrame();
         this.bufferedImage = new BufferedImage(windowPixelWidth, windowPixelHeight, BufferedImage.TYPE_INT_RGB);
         this.pixelsOfFrameToBeDisplayed = ((DataBufferInt) bufferedImage.getRaster().getDataBuffer()).getData();
+
+        input.add(0.0f);
+        input.add(0.0f);
+        input.add(0.0f);
     }
 
     private void initJFrame() {
@@ -44,6 +56,7 @@ public class GUI extends Canvas implements Runnable {
         this.frame.add(this);
         this.frame.pack();
         this.frame.setLocationRelativeTo(null);
+        this.frame.addKeyListener(this);
     }
     private void setCanvasSize() {
         this.setSize(this.windowPixelWidth, this.windowPixelHeight);
@@ -92,11 +105,17 @@ public class GUI extends Canvas implements Runnable {
         }
         Graphics graphics = bufferStrategy.getDrawGraphics();
         this.screen.clearScreen();
-        this.screen.renderFrame();
+        ArrayList<Triangle> b = this.screen.renderFrame(input);
 
         graphics.setColor(Color.black);
         graphics.fillRect(0,0, windowPixelWidth, windowPixelHeight);
         graphics.drawImage(this.bufferedImage, 0, 0, getWidth(), getHeight(), null);
+        for (Triangle t: b) {
+            graphics.setColor(new Color(t.color));
+            graphics.drawLine((int) t.points[0].x, (int) t.points[0].y, (int) t.points[1].x, (int) t.points[1].y);
+            graphics.drawLine((int) t.points[1].x, (int) t.points[1].y, (int) t.points[2].x, (int) t.points[2].y);
+            graphics.drawLine((int) t.points[2].x, (int) t.points[2].y, (int) t.points[0].x, (int) t.points[0].y);
+        }
         graphics.dispose();
         bufferStrategy.show();
     }
@@ -107,6 +126,33 @@ public class GUI extends Canvas implements Runnable {
     public static void main(String[] args) {
         GUI gui = new GUI(1024, 960);
         gui.start();
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_W) {
+            input.set(0, input.get(0) + 0.05f);
+        }
+        if (e.getKeyCode() == KeyEvent.VK_S) {
+            input.set(0, input.get(0) - 0.05f);
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_A) {
+            input.set(1, input.get(1) - 0.05f);
+        }
+        if (e.getKeyCode() == KeyEvent.VK_D) {
+            input.set(1, input.get(1) + 0.05f);
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }
 
