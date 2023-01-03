@@ -105,17 +105,11 @@ public class GUI extends Canvas implements Runnable, KeyListener {
         }
         Graphics graphics = bufferStrategy.getDrawGraphics();
         this.screen.clearScreen();
-        ArrayList<Triangle> b = this.screen.renderFrame(input);
+        this.screen.renderFrame(input);
 
         graphics.setColor(Color.black);
         graphics.fillRect(0,0, windowPixelWidth, windowPixelHeight);
         graphics.drawImage(this.bufferedImage, 0, 0, getWidth(), getHeight(), null);
-        for (Triangle t: b) {
-            graphics.setColor(new Color(t.color));
-            graphics.drawLine((int) t.points[0].x, (int) t.points[0].y, (int) t.points[1].x, (int) t.points[1].y);
-            graphics.drawLine((int) t.points[1].x, (int) t.points[1].y, (int) t.points[2].x, (int) t.points[2].y);
-            graphics.drawLine((int) t.points[2].x, (int) t.points[2].y, (int) t.points[0].x, (int) t.points[0].y);
-        }
         graphics.dispose();
         bufferStrategy.show();
     }

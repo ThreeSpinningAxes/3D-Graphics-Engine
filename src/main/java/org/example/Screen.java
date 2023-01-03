@@ -38,27 +38,29 @@ public class Screen {
         this.windowPixelWidth = windowPixelWidth;
         this.windowPixelHeight = windowPixelHeight;
         this.pixels = new int[this.windowPixelWidth * this.windowPixelHeight];
-        this.gameEngine = new GameSettings(this.windowPixelWidth, this.windowPixelHeight, 90.0f, 0.1f, 1000.0f);
+        this.gameEngine = new GameSettings(this.windowPixelWidth, this.windowPixelHeight, 90.0f, 0.00001f, 1000.0f);
         this.renderingPipeline = new RenderingPipeline(gameEngine);
         this.vectorBuffer = new Vector();
         this.zBuffer = new ZBuffer(windowPixelWidth * windowPixelHeight);
     }
 
-    public ArrayList<Triangle> renderFrame(ArrayList<Float> input) {
+    public void renderFrame(ArrayList<Float> input) {
         //apply transformations
         time += 0.003f;
-        //renderingPipeline.rotate(time*0.5f, 0, time);
-        ArrayList<Triangle> mesh = new ArrayList<>();
+        renderingPipeline.rotate(time, time*0.5f, time * 0.1f);
+        //ArrayList<Triangle> mesh = new ArrayList<>();
         for (Triangle triangle : cube.getMesh()) {
             //apply initial transformations to triangle
             renderingPipeline.applyTransformationsToTriangle(triangle);
-            //if (renderingPipeline.triangleCanBeDrawn())
-                //fillPixelsAsTriangle(renderingPipeline.applyProjectionAndGetTriangle(), 0x4285F4);
+            if (renderingPipeline.triangleCanBeDrawn())
+                fillPixelsAsTriangle(renderingPipeline.applyProjectionAndGetTriangle(), 0x4285F4);
+                /*
+            {
                 Triangle t = renderingPipeline.applyProjectionAndGetTriangle();
                 mesh.add(t.getCopy());
+            }*/
         }
         zBuffer.clear();
-        return mesh;
     }
 
 
@@ -109,6 +111,7 @@ public class Screen {
 
     private void fillPixelsAsTriangle(Triangle triangle, int hexColor) {
 
+
         /*
         triangle.setDimensionsForRasterImage();
         for (int y = (int) triangle.minY; y <= (int) triangle.maxY; y++) {
@@ -132,7 +135,6 @@ public class Screen {
             }
         }*/
 
-
         fillPixelsAsLine(
                 (int) triangle.points[0].x,
                 (int) triangle.points[0].y,
@@ -151,7 +153,6 @@ public class Screen {
                 (int) triangle.points[0].x,
                 (int) triangle.points[0].y,
                 triangle.color);
-
 
     }
 }

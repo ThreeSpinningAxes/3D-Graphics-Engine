@@ -23,8 +23,7 @@ public class Vector {
         this.w = w;
     }
 
-    public Vector(){
-    }
+    public Vector(){}
 
 
     public static Vector multiplyVectorWithMatrix(Vector V, Matrix4x4 A, Vector result) {
@@ -59,9 +58,7 @@ public class Vector {
     }
 
     public static float calculateDotProduct(Vector A, Vector B) {
-        return A.x * B.x
-                + A.y * B.y
-                + A.z * B.z;
+        return A.x * B.x + A.y * B.y + A.z * B.z;
     }
 
     public static double getMagnitude(Vector V) {

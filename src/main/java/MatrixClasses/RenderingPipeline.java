@@ -29,11 +29,6 @@ public class RenderingPipeline extends Matrix4x4 {
     //ArrayList<FloatBuffer> buffers;
     Matrix4x4 buffer;
 
-    Matrix4x4 xRotation;
-
-    Matrix4x4 yRotation;
-
-    Matrix4x4 zRotation;
 
     Vector vectorBuffer;
 
@@ -50,18 +45,13 @@ public class RenderingPipeline extends Matrix4x4 {
         this.gameEngine = gameEngine;
         this.projectionMatrix = new ProjectionMatrix(gameEngine.getAspectRatio(),
                 gameEngine.getFOVRadians(), gameEngine.getZFar(), gameEngine.getzNear(), gameEngine.getWFactor());
-        this.rotationMatrix = new RotationMatrix();
         this.scalingMatrix = new ScalingMatrix();
         this.scaleToScreenMatrix = new ScalingMatrix(gameEngine.getScreenDimensions());
         this.translationMatrix = new TranslationMatrix();
         this.userTranslationMatrix = new TranslationMatrix();
         this.userScalingMatrix = new ScalingMatrix();
-        this.xRotation = new Matrix4x4();
-        this.xRotation = getXRotationMatrix(0.0f);
-        this.yRotation = new Matrix4x4();
-        this.yRotation = getYRotationMatrix(0.0f);
-        this.zRotation = new Matrix4x4();
-        this.zRotation = getZRotationMatrix(0.0f);
+        this.rotationMatrix = new RotationMatrix();
+
         //////////////////////////////////////////
         this.buffer = new Matrix4x4();
         this.vectorBuffer = new Vector();
@@ -85,53 +75,19 @@ public class RenderingPipeline extends Matrix4x4 {
     }
 
     public void rotate(float angleX, float angleY, float angleZ) {
-        getXRotationMatrix(angleX);
-        getYRotationMatrix(angleY);
-        getZRotationMatrix(angleZ);
-    }
-
-    public Matrix4x4 getXRotationMatrix(float angleRadians) {
-
-        this.xRotation.set(0,0,1);
-        this.xRotation.set(1,1, (float) Math.cos(angleRadians));
-        this.xRotation.set(2,2, (float) Math.cos(angleRadians));
-        this.xRotation.set(1,2, (float) (-1.0f * Math.sin(angleRadians)));
-        this.xRotation.set(2,1, (float) (Math.sin(angleRadians)));
-        this.xRotation.set(3,3,1);
-        return this.xRotation;
-    }
-
-    public Matrix4x4 getYRotationMatrix(float angleRadians) {
-        this.yRotation.set(0,0, (float) Math.cos(angleRadians));
-        this.yRotation.set(2,0, (float) (-1 * Math.sin(angleRadians)));
-        this.yRotation.set(0,2, (float) (Math.sin(angleRadians)));
-        this.yRotation.set(2,2, (float) Math.cos(angleRadians));
-        this.yRotation.set(1,1,1);
-        this.yRotation.set(3,3,1);
-        return this.yRotation;
+        rotationMatrix.setRotatedMatrix(angleX, angleY, angleZ);
     }
 
 
-    public Matrix4x4 getZRotationMatrix(float angleRadians) {
-        this.zRotation.set(0,0, (float) Math.cos(angleRadians));
-        this.zRotation.set(0,1, (float) (-1 * Math.sin(angleRadians)));
-        this.zRotation.set(1,0, (float) (Math.sin(angleRadians)));
-        this.zRotation.set(1,1, (float) Math.cos(angleRadians));
-        this.zRotation.set(2,2,1);
-        this.zRotation.set(3,3,1);
-        return this.zRotation;
-    }
 
 
 
     public Matrix4x4 getTransformationMatrix() {
         transformationMatrix.matrix = IDENTITY_MATRIX().matrix; //reset matrix
         transformationMatrix
-                .mult(zRotation, buffer)
-                .mult(xRotation, buffer)
-                .mult(yRotation, buffer)
-                .mult(userScalingMatrix, buffer)
-                .mult(userTranslationMatrix, buffer)
+                .mult(rotationMatrix, buffer)
+                //.mult(userScalingMatrix, buffer)
+                //.mult(userTranslationMatrix, buffer)
                 .mult(translationMatrix.getTranslatedMatrix(0.0f, 0.0f, 3.0f), buffer);
         return transformationMatrix;
     }
@@ -144,6 +100,7 @@ public class RenderingPipeline extends Matrix4x4 {
         int i = 0;
         for (Vector vector : triangle.points) {
             multiplyVectorWithMatrix(vector, transformationMatrix, vectorBuffer);
+            //divideVectorComponentsByW(vectorBuffer); redundant since vectors transformations dont change the w
             triangleBuffer.addVector(vectorBuffer.getCopy(), i);
             i++;
         }
@@ -151,7 +108,7 @@ public class RenderingPipeline extends Matrix4x4 {
     }
 
     public boolean triangleCanBeDrawn() {
-        return canSeeTriangle(triangleBuffer);
+        return canSeeTriangle(triangleBuffer) && !isTriangleDegenerate(triangleBuffer);
     }
 
 
@@ -166,14 +123,6 @@ public class RenderingPipeline extends Matrix4x4 {
         return triangleBuffer;
     }
 
-    private void resetMatricesAndClearBuffers() {
-        this.triangleBuffer.clear();
-        this.vectorBuffer.clear();
-        this.translationMatrix.getTranslatedMatrix(0.0f,0.0f,0.0f);
-        this.scalingMatrix.getScaledMatrix(1.0f,1.0f,1.0f);
-        this.xRotation = getXRotationMatrix(0.0f);
-        this.zRotation = getZRotationMatrix(0.0f);
-    }
 
     private boolean canSeeTriangle(Triangle triangle) {
         Vector line1 = subtractVectors(triangle.points[1], triangle.points[0]);
@@ -181,9 +130,28 @@ public class RenderingPipeline extends Matrix4x4 {
         Vector normal = crossProduct(line1, line2);
         float magnitude = (float) getMagnitude(normal);
         normal.x /= magnitude; normal.y /= magnitude; normal.z /= magnitude;
-        Vector cam = subtractVectors(triangle.points[0],camera );
+        Vector cam = subtractVectors(triangle.points[0], camera);
         float d = calculateDotProduct(cam, normal);
         return d < -0.0f;
+    }
+    private boolean isTriangleDegenerate(Triangle triangle) {
+        return isTriangleCollinear(triangle);
+    }
+
+    private boolean isTriangleCollinear(Triangle triangle) {
+        float x1 = triangle.points[0].x;
+        float y1 = triangle.points[0].y;
+        float x2 = triangle.points[1].x;
+        float y2 = triangle.points[1].y;
+        float x3 = triangle.points[2].x;
+        float y3 = triangle.points[2].y;
+
+        float area = (x1*y2 + x2*y3 + x3*y1) - (y1*x2 + y2*x3 + y3*x1);
+
+        return Math.abs(area) < 0.000001;
+
+
+
     }
 
 }

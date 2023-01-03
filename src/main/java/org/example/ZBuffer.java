@@ -11,7 +11,7 @@ public class ZBuffer {
 
     public ZBuffer(int pixels) {
         this.zBuffer = new float[pixels];
-        Arrays.fill(zBuffer, 1.0f);
+        Arrays.fill(zBuffer, 10.0f);
         this.backBuffer = new float[pixels];
     }
 
@@ -25,7 +25,7 @@ public class ZBuffer {
     }
 
     public void clear() {
-        Arrays.fill(zBuffer, 1.0f);
+        Arrays.fill(zBuffer, 10.0f);
         Arrays.fill(backBuffer, 0);
     }
 
