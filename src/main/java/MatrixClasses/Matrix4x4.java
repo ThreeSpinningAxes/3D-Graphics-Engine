@@ -103,11 +103,10 @@ public class Matrix4x4 {
                 0,2,1,3,
                 5,5,6,1
         });
-        Matrix4x4 result = new Matrix4x4();
-        matrixMultiply(A, B, result);
-        System.out.println(result);
-        A.mult(B, result);
-        System.out.println(A);
+        Vector V = new Vector(1,2,3,4);
+        Vector BE = new Vector();
+        Vector.multiplyVectorWithMatrix(V, A, BE);
+        System.out.println(BE);
     }
 
 }

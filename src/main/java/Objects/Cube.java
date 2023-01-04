@@ -6,6 +6,10 @@ import java.awt.*;
 
 public class Cube extends Mesh {
 
+    public Cube(int color) {
+        this();
+        setColor(color);
+    }
     public Cube() {
         //south
         this.addTriangle(new Triangle(new Vector[]{
@@ -73,11 +77,6 @@ public class Cube extends Mesh {
                 new Vector( 0.0f, 0.0f, 0.0f),
                 new Vector(1.0f, 0.0f, 0.0f)
         }));
-
-        for (int i = 0; i < this.getMesh().size(); i++)
-        {
-            this.getMesh().get(i).color = Mesh.getRandomHexColor();
-        }
 
     }
 }

@@ -57,6 +57,14 @@ public class Vector {
         return result;
     }
 
+    public static Vector subtractVectors2D(Vector A, Vector B) {
+        Vector result = new Vector();
+        result.x = A.x - B.x;
+        result.y = A.y - B.y;
+        //result.z = A.z - B.z;
+        return result;
+    }
+
     public static float calculateDotProduct(Vector A, Vector B) {
         return A.x * B.x + A.y * B.y + A.z * B.z;
     }
@@ -65,24 +73,9 @@ public class Vector {
         return Math.sqrt(V.x * V.x + V.y * V.y + V.z * V.z);
     }
 
-    //smaller vector for A
-    public static Vector normalizeVector(Vector V) {
-        Vector v = V.getCopy();
-        float magnitude = (float) getMagnitude(v);
-        v.x /= magnitude;
-        v.y /= magnitude;
-        v.z /= magnitude;
-        return v;
-    }
-
-
 
     public static Vector crossProduct(Vector A, Vector B) {
-        Vector V = new Vector();
-        V.x = A.y * B.z - A.z * B.y;
-        V.y = A.z * B.x - A.x * B.z;
-        V.z = A.x * B.y - A.y * B.x;
-        return V;
+        return new Vector(A.y * B.z - A.z * B.y,  A.z * B.x - A.x * B.z,A.x * B.y - A.y * B.x);
     }
 
 

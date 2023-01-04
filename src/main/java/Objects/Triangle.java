@@ -12,7 +12,7 @@ public class Triangle {
 
     public int color;
 
-    public Vector[] points = new Vector[3];
+    public Vector[] points;
 
     public Triangle(Vector[] points) {
         this.points = points;
@@ -35,9 +35,9 @@ public class Triangle {
     //OPTIMZE FOR 2D VECTORS
     public static Vector getBarycentricCoordinates(Vector p, Vector a, Vector b, Vector c)
     {
-        Vector v0 = subtractVectors(b, a);
-        Vector v1 = subtractVectors(c,a);
-        Vector v2 = subtractVectors(p,a);
+        Vector v0 = subtractVectors2D(b, a);
+        Vector v1 = subtractVectors2D(c,a);
+        Vector v2 = subtractVectors2D(p,a);
 
         float d00 = calculateDotProduct(v0, v0);
         float d01 = calculateDotProduct(v0, v1);
@@ -60,13 +60,17 @@ public class Triangle {
     }
 
     public void clear() {
-        this.points[0].x = 0; this.points[0].y = 0; this.points[0].z = 0; this.points[0].w = 0.0f;
-        this.points[1].x = 0; this.points[1].y = 0; this.points[1].z = 0; this.points[1].w = 0.0f;
-        this.points[2].x = 0; this.points[2].y = 0; this.points[2].z = 0; this.points[2].w = 0.0f;
+        this.points[0].clear();
+        this.points[1].clear();
+        this.points[2].clear();
     }
 
     public Triangle getCopy() {
-        Triangle t = new Triangle(new Vector[]{this.points[0].getCopy(), this.points[1].getCopy(), this.points[2].getCopy()});
+        Triangle t = new Triangle(new Vector[]{
+                this.points[0].getCopy(),
+                this.points[1].getCopy(),
+                this.points[2].getCopy()
+        });
         t.color = this.color;
         return t;
     }

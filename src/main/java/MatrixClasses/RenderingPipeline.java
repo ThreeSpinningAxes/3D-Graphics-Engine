@@ -1,5 +1,6 @@
 package MatrixClasses;
 
+import Objects.Light;
 import org.example.GameSettings;
 import Objects.Triangle;
 
@@ -9,6 +10,10 @@ import static MatrixClasses.Vector.*;
 public class RenderingPipeline extends Matrix4x4 {
 
     Vector camera = new Vector(0.0f,0.0f,0.0f, 0.0f);
+
+    Light light = new Light(0,0,-1, 0xF4BB44);
+
+    float ambientStrength = 0.1f;
 
     GameSettings gameEngine;
 
@@ -37,7 +42,7 @@ public class RenderingPipeline extends Matrix4x4 {
     Matrix4x4 transformationMatrix;
 
     //project, scale down objects, and make origin center of screen
-    Matrix4x4 standardProjectionMatrix;
+    Matrix4x4 transformationAfterProjectionMatrix;
 
 
     public RenderingPipeline(GameSettings gameEngine) {
@@ -58,12 +63,12 @@ public class RenderingPipeline extends Matrix4x4 {
         this.triangleBuffer = new Triangle(new Vector[]{new Vector(), new Vector(), new Vector()});
         this.transformationMatrix = IDENTITY_MATRIX();
         ///////////////////////////////////////////
-        standardProjectionMatrix =
+        transformationAfterProjectionMatrix =
                 IDENTITY_MATRIX()
-                        .mult(projectionMatrix, buffer)
                         .mult(translationMatrix.getTranslatedMatrix(1.0f, 1.0f, 0.0f), buffer) //puts origin in middle
                         .mult(scalingMatrix.getScaledMatrix(0.5f, 0.5f, 1.0f), buffer) //scales screen by half
                         .mult(scaleToScreenMatrix, buffer); // scales to window size
+
     }
 
     public void scale(float xScale, float yScale, float zScale) {
@@ -77,8 +82,6 @@ public class RenderingPipeline extends Matrix4x4 {
     public void rotate(float angleX, float angleY, float angleZ) {
         rotationMatrix.setRotatedMatrix(angleX, angleY, angleZ);
     }
-
-
 
 
 
@@ -100,7 +103,6 @@ public class RenderingPipeline extends Matrix4x4 {
         int i = 0;
         for (Vector vector : triangle.points) {
             multiplyVectorWithMatrix(vector, transformationMatrix, vectorBuffer);
-            //divideVectorComponentsByW(vectorBuffer); redundant since vectors transformations dont change the w
             triangleBuffer.addVector(vectorBuffer.getCopy(), i);
             i++;
         }
@@ -108,19 +110,30 @@ public class RenderingPipeline extends Matrix4x4 {
     }
 
     public boolean triangleCanBeDrawn() {
-        return canSeeTriangle(triangleBuffer) && !isTriangleDegenerate(triangleBuffer);
+        return canSeeTriangle(triangleBuffer) ;//&& !isTriangleDegenerate(triangleBuffer);
     }
-
 
     public Triangle applyProjectionAndGetTriangle() {
         this.matrix = IDENTITY_MATRIX().matrix;
-        this.mult(standardProjectionMatrix, buffer);
+        this.mult(projectionMatrix, buffer);
 
         for (Vector vector : triangleBuffer.points) {
             multiplyVectorWithMatrix(vector, this, vector);
             divideVectorComponentsByW(vector);
         }
+        performTransformationsAfterProjection();
         return triangleBuffer;
+    }
+
+    private void performTransformationsAfterProjection() {
+        this.mult(transformationAfterProjectionMatrix, buffer);
+        for (Vector vector : triangleBuffer.points) {
+            multiplyVectorWithMatrix(vector, this, vector);
+        }
+    }
+
+    private void performAmbientLighting() {
+
     }
 
 
@@ -149,9 +162,6 @@ public class RenderingPipeline extends Matrix4x4 {
         float area = (x1*y2 + x2*y3 + x3*y1) - (y1*x2 + y2*x3 + y3*x1);
 
         return Math.abs(area) < 0.000001;
-
-
-
     }
 
 }

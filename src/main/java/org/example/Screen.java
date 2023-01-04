@@ -16,11 +16,11 @@ public class Screen {
 
     private int windowPixelHeight;
 
-    private GameSettings gameEngine;
+    private GameSettings gameSettings;
 
     private Vector vectorBuffer;
 
-    private Cube cube = new Cube();
+    private Cube cube = new Cube(0x4285F4);
 
 
     private Pyramid pyramid = new Pyramid();
@@ -38,22 +38,22 @@ public class Screen {
         this.windowPixelWidth = windowPixelWidth;
         this.windowPixelHeight = windowPixelHeight;
         this.pixels = new int[this.windowPixelWidth * this.windowPixelHeight];
-        this.gameEngine = new GameSettings(this.windowPixelWidth, this.windowPixelHeight, 90.0f, 0.00001f, 1000.0f);
-        this.renderingPipeline = new RenderingPipeline(gameEngine);
+        this.gameSettings = new GameSettings(this.windowPixelWidth, this.windowPixelHeight, 90.0f, 0.1f, 1000.0f);
+        this.renderingPipeline = new RenderingPipeline(gameSettings);
         this.vectorBuffer = new Vector();
         this.zBuffer = new ZBuffer(windowPixelWidth * windowPixelHeight);
     }
 
     public void renderFrame(ArrayList<Float> input) {
         //apply transformations
-        time += 0.003f;
+        time += 0.005f;
         renderingPipeline.rotate(time, time*0.5f, time * 0.1f);
         //ArrayList<Triangle> mesh = new ArrayList<>();
         for (Triangle triangle : cube.getMesh()) {
             //apply initial transformations to triangle
             renderingPipeline.applyTransformationsToTriangle(triangle);
             if (renderingPipeline.triangleCanBeDrawn())
-                fillPixelsAsTriangle(renderingPipeline.applyProjectionAndGetTriangle(), 0x4285F4);
+                fillPixelsAsTriangle(renderingPipeline.applyProjectionAndGetTriangle());
                 /*
             {
                 Triangle t = renderingPipeline.applyProjectionAndGetTriangle();
@@ -109,10 +109,8 @@ public class Screen {
         }
     }
 
-    private void fillPixelsAsTriangle(Triangle triangle, int hexColor) {
+    private void fillPixelsAsTriangle(Triangle triangle) {
 
-
-        /*
         triangle.setDimensionsForRasterImage();
         for (int y = (int) triangle.minY; y <= (int) triangle.maxY; y++) {
             vectorBuffer.y = y;
@@ -121,19 +119,19 @@ public class Screen {
                 Vector b = Triangle.getBarycentricCoordinates
                         (vectorBuffer, triangle.points[0], triangle.points[1], triangle.points[2]);
                 if (b.x > 0.0f && b.y > 0.0f && b.z > 0.0f) {
-                    float z0 = triangle.points[0].z * 0.5f + 0.5f;
-                    float z1 = triangle.points[1].z * 0.5f + 0.5f;
-                    float z2 = triangle.points[2].z * 0.5f + 0.5f;
+                    float z0 = triangle.points[0].z ;//* 0.5f + 0.5f;
+                    float z1 = triangle.points[1].z ;//* 0.5f + 0.5f;
+                    float z2 = triangle.points[2].z ;//* 0.5f + 0.5f;
                     //get zDepth of current pixel
                     float zDepth = (z0 * b.x + z1 * b.y + z2 * b.z);
 
                     if (zDepth < zBuffer.getZValue(x * windowPixelWidth + y)) {
-                        zBuffer.update(x * windowPixelWidth + y, zDepth, hexColor);
+                        zBuffer.update(x * windowPixelWidth + y, zDepth, triangle.color);
                         setPixel(x, y, triangle.color);
                     }
                 }
             }
-        }*/
+        }
 
         fillPixelsAsLine(
                 (int) triangle.points[0].x,

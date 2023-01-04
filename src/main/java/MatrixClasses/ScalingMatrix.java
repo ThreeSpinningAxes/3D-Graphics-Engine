@@ -7,6 +7,7 @@ public class ScalingMatrix extends Matrix4x4 {
         this.getScaledMatrix(1.0f, 1.0f, 1.0f);
     }
 
+    //Constructor for scaling to window size
     public ScalingMatrix(int[] dimensions) {
         super();
         this.getScaledMatrix((float)dimensions[0], (float)dimensions[1], 1.0f);
