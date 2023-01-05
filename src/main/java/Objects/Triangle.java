@@ -2,6 +2,7 @@ package Objects;
 
 import MatrixClasses.Vector;
 
+import java.awt.*;
 import java.util.Arrays;
 
 import static MatrixClasses.Vector.*;
@@ -10,7 +11,7 @@ public class Triangle {
 
     public float maxX, minX, maxY, minY;
 
-    public int color;
+    public Color color;
 
     public Vector[] points;
 

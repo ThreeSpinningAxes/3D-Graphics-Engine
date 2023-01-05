@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class Cube extends Mesh {
 
-    public Cube(int color) {
+    public Cube(Color color) {
         this();
         setColor(color);
     }

@@ -2,11 +2,13 @@ package Objects;
 
 import MatrixClasses.Vector;
 
+import java.awt.*;
+
 public class Light extends Vector {
 
-    public float lightIntensity;
+    public float intensity = 1.0f;
 
-    public int color;
+    public Color color;
 
     public Light() {
         super();
@@ -18,7 +20,7 @@ public class Light extends Vector {
 
     public Light(float x, float y, float z, int color) {
         super(x, y, z);
-        this.color = color;
+        this.color = new Color(color);
     }
 
 

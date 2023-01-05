@@ -1,5 +1,6 @@
 package Objects;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -7,7 +8,7 @@ public class Mesh {
 
     private ArrayList<Triangle> mesh = new ArrayList<>();
 
-    public void setColor(int color) {
+    public void setColor(Color color) {
         for (Triangle t : mesh) {
             t.color = color;
         }
@@ -26,11 +27,11 @@ public class Mesh {
         return random.nextInt(0xffffff + 1);
     }
 
-    public void setColorOfTriangle(Triangle t, int color) {
+    public void setColorOfTriangle(Triangle t, Color color) {
         t.color = color;
     }
 
-    public int getColorOfTriangle(Triangle t) {
+    public Color getColorOfTriangle(Triangle t) {
         return t.color;
     }
 

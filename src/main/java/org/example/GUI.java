@@ -90,6 +90,7 @@ public class GUI extends Canvas implements Runnable, KeyListener {
         }
     }
     public void renderFrame() {
+        long t = System.currentTimeMillis();
         //bstrat is a way of managing data across two systems. 1 buffer shows the frame, 1 buffer loads the next frame,
         // 1 buffer is used to construct a frame.
         BufferStrategy bufferStrategy = this.getBufferStrategy();
@@ -110,6 +111,11 @@ public class GUI extends Canvas implements Runnable, KeyListener {
         graphics.setColor(Color.black);
         graphics.fillRect(0,0, windowPixelWidth, windowPixelHeight);
         graphics.drawImage(this.bufferedImage, 0, 0, getWidth(), getHeight(), null);
+
+        t = System.currentTimeMillis() - t;
+        graphics.setFont(new Font("Seqoe UI", Font.PLAIN, 16));
+        graphics.setColor(Color.WHITE);
+        graphics.drawString("FPS: " + (int) (1000 / (t+0.01)), 10, 20);
         graphics.dispose();
         bufferStrategy.show();
     }

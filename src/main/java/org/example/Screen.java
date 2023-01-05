@@ -3,10 +3,12 @@ package org.example;
 import MatrixClasses.RenderingPipeline;
 import MatrixClasses.Vector;
 import Objects.Cube;
+import Objects.Mesh;
 import Objects.Pyramid;
 import Objects.Triangle;
 import net.jafama.FastMath;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -20,10 +22,12 @@ public class Screen {
 
     private Vector vectorBuffer;
 
-    private Cube cube = new Cube(0x4285F4);
+    private Cube cube = new Cube(new Color(0x4285F4));
 
 
     private Pyramid pyramid = new Pyramid();
+
+    private ArrayList<Mesh> meshes = new ArrayList<>();
 
     private RenderingPipeline renderingPipeline;
 
@@ -42,32 +46,25 @@ public class Screen {
         this.renderingPipeline = new RenderingPipeline(gameSettings);
         this.vectorBuffer = new Vector();
         this.zBuffer = new ZBuffer(windowPixelWidth * windowPixelHeight);
+
+        meshes.add(cube);
     }
 
     public void renderFrame(ArrayList<Float> input) {
         //apply transformations
-        time += 0.005f;
+        time += 0.003f;
         renderingPipeline.rotate(time, time*0.5f, time * 0.1f);
         //ArrayList<Triangle> mesh = new ArrayList<>();
-        for (Triangle triangle : cube.getMesh()) {
-            //apply initial transformations to triangle
-            renderingPipeline.applyTransformationsToTriangle(triangle);
-            if (renderingPipeline.triangleCanBeDrawn())
-                fillPixelsAsTriangle(renderingPipeline.applyProjectionAndGetTriangle());
-                /*
-            {
-                Triangle t = renderingPipeline.applyProjectionAndGetTriangle();
-                mesh.add(t.getCopy());
-            }*/
-        }
+        ArrayList<Mesh> result = renderingPipeline.renderMeshes(this.meshes);
+        drawMeshes(result);
         zBuffer.clear();
     }
 
 
-    public void setPixel(int pixelX, int pixelY, int pixelValue) {
+    public void setPixel(int pixelX, int pixelY,  Color pixelColor) {
         int index = pixelY * windowPixelWidth + pixelX;
         if (index > 0 && index < pixels.length)
-            this.pixels[index] = pixelValue;
+            this.pixels[index] = pixelColor.getRGB();
     }
 
     public int getPixel(int pixelX, int pixelY) {
@@ -83,7 +80,7 @@ public class Screen {
     }
 
     //optimize
-    private void fillPixelsAsLine(float x0, float y0,float x2, float y2, int hexColor) {
+    private void fillPixelsAsLine(float x0, float y0,float x2, float y2, Color color) {
         float x1 = x0;
         float y1 = y0;
 
@@ -95,7 +92,7 @@ public class Screen {
 
         while (true) {
             // Set the color of the pixel at (x1, y1)
-            setPixel((int)x1, (int)y1, hexColor);
+            setPixel((int)x1, (int)y1, color);
             if (x1 == x2 && y1 == y2) break;
             float e2 = 2 * err;
             if (e2 > -dy) {
@@ -109,8 +106,16 @@ public class Screen {
         }
     }
 
+    private void drawMeshes(ArrayList<Mesh> meshes) {
+        for (Mesh mesh : meshes) {
+            for (Triangle triangle: mesh.getMesh())
+                fillPixelsAsTriangle(triangle);
+        }
+    }
+
     private void fillPixelsAsTriangle(Triangle triangle) {
 
+/*
         triangle.setDimensionsForRasterImage();
         for (int y = (int) triangle.minY; y <= (int) triangle.maxY; y++) {
             vectorBuffer.y = y;
@@ -131,7 +136,7 @@ public class Screen {
                     }
                 }
             }
-        }
+        }*/
 
         fillPixelsAsLine(
                 (int) triangle.points[0].x,
@@ -151,6 +156,5 @@ public class Screen {
                 (int) triangle.points[0].x,
                 (int) triangle.points[0].y,
                 triangle.color);
-
     }
 }

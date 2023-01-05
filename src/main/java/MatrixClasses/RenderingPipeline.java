@@ -1,8 +1,14 @@
 package MatrixClasses;
 
 import Objects.Light;
+import Objects.Mesh;
 import org.example.GameSettings;
 import Objects.Triangle;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import static MatrixClasses.Vector.*;
 
@@ -13,7 +19,10 @@ public class RenderingPipeline extends Matrix4x4 {
 
     Light light = new Light(0,0,-1, 0xF4BB44);
 
-    float ambientStrength = 0.1f;
+    Color ambientLightColor = new Color(1,1,1);
+
+    float ambientStrength = 0.2f;
+
 
     GameSettings gameEngine;
 
@@ -68,6 +77,8 @@ public class RenderingPipeline extends Matrix4x4 {
                         .mult(translationMatrix.getTranslatedMatrix(1.0f, 1.0f, 0.0f), buffer) //puts origin in middle
                         .mult(scalingMatrix.getScaledMatrix(0.5f, 0.5f, 1.0f), buffer) //scales screen by half
                         .mult(scaleToScreenMatrix, buffer); // scales to window size
+        ////////////////////////////////////////////
+        light.intensity = 0.1f;
 
     }
 
@@ -83,30 +94,45 @@ public class RenderingPipeline extends Matrix4x4 {
         rotationMatrix.setRotatedMatrix(angleX, angleY, angleZ);
     }
 
+    public ArrayList<Mesh> renderMeshes(ArrayList<Mesh> meshes) {
+        ArrayList<Mesh> result = new ArrayList<>();
+        for (int i = 0; i < meshes.size(); i++) {
+            setTransformationMatrix();
+            result.add(new Mesh());
+            ArrayList<Triangle> mesh = meshes.get(i).getMesh();
+            HashMap<Vector, Vector> vertexNormals = new HashMap<>();
+            for (Triangle triangle : mesh) {
+                applyTransformationsToTriangle(triangle);
+                if (triangleCanBeDrawn())
+                    result.get(i).getMesh().add(applyProjectionAndGetTriangle());
 
+            }
+            //performAmbientLighting(result.get(i).getMesh(), this.light);
+        }
+        return result;
+    }
 
-    public Matrix4x4 getTransformationMatrix() {
+    public void setTransformationMatrix() {
         transformationMatrix.matrix = IDENTITY_MATRIX().matrix; //reset matrix
         transformationMatrix
                 .mult(rotationMatrix, buffer)
                 //.mult(userScalingMatrix, buffer)
                 //.mult(userTranslationMatrix, buffer)
                 .mult(translationMatrix.getTranslatedMatrix(0.0f, 0.0f, 3.0f), buffer);
-        return transformationMatrix;
     }
 
 
     public void applyTransformationsToTriangle(Triangle triangle) {
-        triangleBuffer.clear();
-        vectorBuffer.clear();
-        getTransformationMatrix();
+        //triangleBuffer.clear();
+        //setTransformationMatrix();
         int i = 0;
         for (Vector vector : triangle.points) {
             multiplyVectorWithMatrix(vector, transformationMatrix, vectorBuffer);
             triangleBuffer.addVector(vectorBuffer.getCopy(), i);
             i++;
         }
-        triangleBuffer.color = triangle.color;
+        float[] ambientLightComponents = calculateAmbientLighting(triangle.color);
+        triangleBuffer.color = new Color(ambientLightComponents[0], ambientLightComponents[1], ambientLightComponents[2]);
     }
 
     public boolean triangleCanBeDrawn() {
@@ -122,7 +148,7 @@ public class RenderingPipeline extends Matrix4x4 {
             divideVectorComponentsByW(vector);
         }
         performTransformationsAfterProjection();
-        return triangleBuffer;
+        return triangleBuffer.getCopy();
     }
 
     private void performTransformationsAfterProjection() {
@@ -132,9 +158,18 @@ public class RenderingPipeline extends Matrix4x4 {
         }
     }
 
-    private void performAmbientLighting() {
+    private float[] calculateAmbientLighting(Color objectColor) {
+        float denomSum = objectColor.getRed() + objectColor.getBlue() + objectColor.getGreen();
+        float nObjectRed = objectColor.getRed() / denomSum;
+        float nObjectBlue = objectColor.getBlue() / denomSum;
+        float nObjectGreen = 1 - nObjectRed - nObjectBlue;
 
+        return new float[] {ambientLightColor.getRed() * ambientStrength * nObjectRed,
+                ambientLightColor.getGreen() * ambientStrength * nObjectGreen,
+                ambientLightColor.getBlue()* ambientStrength * nObjectBlue};
     }
+
+
 
 
     private boolean canSeeTriangle(Triangle triangle) {
@@ -143,9 +178,8 @@ public class RenderingPipeline extends Matrix4x4 {
         Vector normal = crossProduct(line1, line2);
         float magnitude = (float) getMagnitude(normal);
         normal.x /= magnitude; normal.y /= magnitude; normal.z /= magnitude;
-        Vector cam = subtractVectors(triangle.points[0], camera);
-        float d = calculateDotProduct(cam, normal);
-        return d < -0.0f;
+        float d = calculateDotProduct(subtractVectors(triangle.points[0], camera), normal);
+        return d < 0.0f;
     }
     private boolean isTriangleDegenerate(Triangle triangle) {
         return isTriangleCollinear(triangle);
