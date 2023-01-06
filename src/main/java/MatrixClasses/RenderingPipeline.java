@@ -6,9 +6,7 @@ import org.example.GameSettings;
 import Objects.Triangle;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 import static MatrixClasses.Vector.*;
 
@@ -17,7 +15,7 @@ public class RenderingPipeline extends Matrix4x4 {
 
     Vector camera = new Vector(0.0f,0.0f,0.0f, 0.0f);
 
-    Light light = new Light(0,0,-1, 0xF4BB44);
+    Light directionalLight = new Light(0,0,-1, 0xF4BB44);
 
     Color ambientLightColor = new Color(1,1,1);
 
@@ -53,7 +51,6 @@ public class RenderingPipeline extends Matrix4x4 {
     //project, scale down objects, and make origin center of screen
     Matrix4x4 transformationAfterProjectionMatrix;
 
-
     public RenderingPipeline(GameSettings gameEngine) {
         super(IDENTITY_MATRIX());
         this.gameEngine = gameEngine;
@@ -78,7 +75,7 @@ public class RenderingPipeline extends Matrix4x4 {
                         .mult(scalingMatrix.getScaledMatrix(0.5f, 0.5f, 1.0f), buffer) //scales screen by half
                         .mult(scaleToScreenMatrix, buffer); // scales to window size
         ////////////////////////////////////////////
-        light.intensity = 0.1f;
+        this.directionalLight.intensity = 0.1f;
 
     }
 
@@ -96,21 +93,27 @@ public class RenderingPipeline extends Matrix4x4 {
 
     public ArrayList<Mesh> renderMeshes(ArrayList<Mesh> meshes) {
         ArrayList<Mesh> result = new ArrayList<>();
-        for (int i = 0; i < meshes.size(); i++) {
-            setTransformationMatrix();
-            result.add(new Mesh());
-            ArrayList<Triangle> mesh = meshes.get(i).getMesh();
-            HashMap<Vector, Vector> vertexNormals = new HashMap<>();
-            for (Triangle triangle : mesh) {
-                applyTransformationsToTriangle(triangle);
-                if (triangleCanBeDrawn())
-                    result.get(i).getMesh().add(applyProjectionAndGetTriangle());
 
+        for (int i = 0; i < meshes.size(); i++) {
+            setTransformationMatrix(); // set transformation matrix to the multiplication of all indivisual transformation matrices.
+            result.add(new Mesh());
+
+            Mesh currentMesh = meshes.get(i);
+            Map<Triangle, Vector> normalsOfMesh = currentMesh.getNormalsMap();
+
+            for (Triangle triangle : currentMesh.getMesh()) {
+                applyTransformationsToTriangle(triangle, this.triangleBuffer);
+                //rotations effect normal, so only need to apply rotation transformation
+                Vector transformedNormal = currentMesh.applyTransformationsToTriangleNormal(this.rotationMatrix, triangle);
+                if (triangleCanBeSeen(transformedNormal, this.triangleBuffer.points[0])) {
+                    result.get(i).getMesh().add(applyProjectionAndGetTriangle());
+                }
             }
-            //performAmbientLighting(result.get(i).getMesh(), this.light);
+            //result.get(i).getMesh().add(applyProjectionAndGetTriangle());
         }
         return result;
     }
+
 
     public void setTransformationMatrix() {
         transformationMatrix.matrix = IDENTITY_MATRIX().matrix; //reset matrix
@@ -122,7 +125,7 @@ public class RenderingPipeline extends Matrix4x4 {
     }
 
 
-    public void applyTransformationsToTriangle(Triangle triangle) {
+    public void applyTransformationsToTriangle(Triangle triangle, Triangle triangleBuffer) {
         //triangleBuffer.clear();
         //setTransformationMatrix();
         int i = 0;
@@ -135,9 +138,11 @@ public class RenderingPipeline extends Matrix4x4 {
         triangleBuffer.color = new Color(ambientLightComponents[0], ambientLightComponents[1], ambientLightComponents[2]);
     }
 
-    public boolean triangleCanBeDrawn() {
-        return canSeeTriangle(triangleBuffer) ;//&& !isTriangleDegenerate(triangleBuffer);
-    }
+
+
+
+         //&& !isTriangleDegenerate(triangleBuffer);
+
 
     public Triangle applyProjectionAndGetTriangle() {
         this.matrix = IDENTITY_MATRIX().matrix;
@@ -145,7 +150,7 @@ public class RenderingPipeline extends Matrix4x4 {
 
         for (Vector vector : triangleBuffer.points) {
             multiplyVectorWithMatrix(vector, this, vector);
-            divideVectorComponentsByW(vector);
+            perspectiveDivide(vector);
         }
         performTransformationsAfterProjection();
         return triangleBuffer.getCopy();
@@ -169,18 +174,14 @@ public class RenderingPipeline extends Matrix4x4 {
                 ambientLightColor.getBlue()* ambientStrength * nObjectBlue};
     }
 
+    private boolean triangleCanBeSeen(Vector normal, Vector pointFromTriangle) {
 
-
-
-    private boolean canSeeTriangle(Triangle triangle) {
-        Vector line1 = subtractVectors(triangle.points[1], triangle.points[0]);
-        Vector line2 = subtractVectors(triangle.points[2], triangle.points[0]);
-        Vector normal = crossProduct(line1, line2);
-        float magnitude = (float) getMagnitude(normal);
-        normal.x /= magnitude; normal.y /= magnitude; normal.z /= magnitude;
-        float d = calculateDotProduct(subtractVectors(triangle.points[0], camera), normal);
+        Vector v1 = subtractVectors(pointFromTriangle, camera);
+        float d = calculateDotProduct(v1, normal);
         return d < 0.0f;
     }
+
+
     private boolean isTriangleDegenerate(Triangle triangle) {
         return isTriangleCollinear(triangle);
     }

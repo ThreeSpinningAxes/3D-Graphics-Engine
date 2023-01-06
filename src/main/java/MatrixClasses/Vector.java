@@ -1,5 +1,7 @@
 package MatrixClasses;
 
+import java.util.Objects;
+
 public class Vector {
 
     public float x;
@@ -34,7 +36,7 @@ public class Vector {
         return result;
     }
 
-    public static void divideVectorComponentsByW(Vector V) {
+    public static void perspectiveDivide(Vector V) {
         if (V.w != 0.0f) {
             V.x /= V.w;
             V.y /= V.w;
@@ -54,6 +56,7 @@ public class Vector {
         result.x = A.x - B.x;
         result.y = A.y - B.y;
         result.z = A.z - B.z;
+        result.w = 1;
         return result;
     }
 
@@ -69,8 +72,8 @@ public class Vector {
         return A.x * B.x + A.y * B.y + A.z * B.z;
     }
 
-    public static double getMagnitude(Vector V) {
-        return Math.sqrt(V.x * V.x + V.y * V.y + V.z * V.z);
+    public static float getMagnitude(Vector V) {
+        return (float) Math.sqrt(V.x * V.x + V.y * V.y + V.z * V.z);
     }
 
 
@@ -94,5 +97,22 @@ public class Vector {
         return "[" + this.x + ", "  + this.y + ", "  + this.z + ", "  + this.w + "]";
     }
 
+    public boolean equals(Object v) {
+        if (v instanceof Vector)
+            return this.x == ((Vector) v).x && this.y == ((Vector) v).y &&  this.z == ((Vector) v).z &  this.w == ((Vector) v).w;
+        else
+            return false;
+    }
 
+    public static Vector normalize(Vector v) {
+        float mag = getMagnitude(v);
+        Vector r = v.getCopy();
+        r.x /= mag;  r.y /= mag;  r.z /= mag;
+        return r;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.x,this.y,this.z,this.w);
+    }
 }

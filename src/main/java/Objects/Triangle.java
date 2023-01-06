@@ -4,6 +4,7 @@ import MatrixClasses.Vector;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Objects;
 
 import static MatrixClasses.Vector.*;
 
@@ -74,6 +75,21 @@ public class Triangle {
         });
         t.color = this.color;
         return t;
+    }
+
+    public boolean equals(Object t) {
+        if (t instanceof Triangle)
+            return this.points[0].equals(((Triangle) t).points[0])
+                    && this.points[1].equals(((Triangle) t).points[1])
+                    && this.points[2].equals(((Triangle) t).points[2])
+                    ;
+        else
+            return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Arrays.hashCode(this.points));
     }
 
     public static void main(String[] args) {

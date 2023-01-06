@@ -52,8 +52,8 @@ public class Screen {
 
     public void renderFrame(ArrayList<Float> input) {
         //apply transformations
-        time += 0.003f;
-        renderingPipeline.rotate(time, time*0.5f, time * 0.1f);
+        time += 0.01f;
+       renderingPipeline.rotate(time, time*0.5f, time * 0.1f);
         //ArrayList<Triangle> mesh = new ArrayList<>();
         ArrayList<Mesh> result = renderingPipeline.renderMeshes(this.meshes);
         drawMeshes(result);
