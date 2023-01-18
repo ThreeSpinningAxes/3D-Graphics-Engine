@@ -46,15 +46,15 @@ public class Screen {
 
         meshes.add(Mesh.loadMesh(Path.of("src/main/java/meshes/teapot.obj")));
         //meshes.add(cube);
+        renderingPipeline.translate(0,0,2);
 
-        renderingPipeline.translate(0,0,8);
     }
 
     public void renderFrame(ArrayList<Float> input) {
         //apply transformations
         renderingPipeline.clearZBuffer();
         time += 0.003f;
-        renderingPipeline.rotate(time , 0, time*0.5f);
+        renderingPipeline.rotate(time,0, 0);
         renderingPipeline.renderMeshes(this.meshes);
         drawMeshes();
     }

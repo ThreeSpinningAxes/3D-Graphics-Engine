@@ -184,6 +184,13 @@ public class RenderingPipeline extends Matrix4x4 {
 
     private void performTransformationsAfterProjection() {
         this.mult(transformationAfterProjectionMatrix, buffer);
+
+        this.triangleBuffer.points[0].x *=-1.0f;
+        this.triangleBuffer.points[1].x *=-1.0f;
+        this.triangleBuffer.points[2].x *=-1.0f;
+        this.triangleBuffer.points[0].y *=-1.0f;
+        this.triangleBuffer.points[1].y *=-1.0f;
+        this.triangleBuffer.points[2].y *=-1.0f;
         for (Vector vector : triangleBuffer.points) {
             multiplyVectorWithMatrix(vector.getCopy(), this, vector);
         }

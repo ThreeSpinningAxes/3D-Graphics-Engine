@@ -31,7 +31,7 @@ public class ProjectionMatrix extends Matrix4x4 {
     }
 
     private static float xScaleFactor(float aspectRatio, float FOVRadians) {
-        return (1.0f / (float) FastMath.tan(FOVRadians /  2.0f));
+        return (aspectRatio / (float) FastMath.tan(FOVRadians /  2.0f));
     }
 
     private static float yScaleFactor(float FOVRadians) {

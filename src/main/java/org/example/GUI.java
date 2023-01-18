@@ -101,9 +101,19 @@ public class GUI extends Canvas implements Runnable, KeyListener {
         }
 
         //we set the pixels of this frame to the screens frame
+
         for (int i = 0; i < this.pixelsOfFrameToBeDisplayed.length; i++) {
             this.pixelsOfFrameToBeDisplayed[i] = this.screen.getPixel(i);
         }
+
+        /*
+        for (int x = 0; x < windowPixelWidth; x++) {
+            for (int y = 0; y < windowPixelHeight; y++) {
+                this.pixelsOfFrameToBeDisplayed[y * windowPixelWidth + x] = this.screen.getPixel(x, windowPixelHeight - 1 - y);
+            }
+        }*/
+
+
         Graphics graphics = bufferStrategy.getDrawGraphics();
         //this.screen.clearScreen();
         this.screen.renderFrame(input);

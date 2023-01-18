@@ -16,7 +16,6 @@ public class Vector {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.w = 1.0f;
     }
     public Vector(float x, float y, float z, float w) {
         this.x = x;
@@ -31,7 +30,6 @@ public class Vector {
         this.x = arr[0];
         this.y = arr[1];
         this.z = arr[2];
-        this.w = 1.0f;
     }
 
 
@@ -82,7 +80,6 @@ public class Vector {
         Vector result = new Vector();
         result.x = A.x - B.x;
         result.y = A.y - B.y;
-        //result.z = A.z - B.z;
         return result;
     }
 
