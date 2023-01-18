@@ -4,6 +4,9 @@ import MatrixClasses.Matrix4x4;
 import MatrixClasses.Vector;
 
 import java.awt.*;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.*;
 
@@ -13,6 +16,8 @@ import static MatrixClasses.Vector.subtractVectors;
 public class Mesh {
 
     private ArrayList<Triangle> mesh = new ArrayList<>();
+
+    private float specularExponent;
 
     private Map<Triangle, Vector> normals = new HashMap<>();
 
@@ -47,6 +52,14 @@ public class Mesh {
         for (Triangle t : mesh) {
             t.color = color;
         }
+    }
+
+    public void setSpecularExponent(float ex) {
+        this.specularExponent = ex;
+    }
+
+    public float getSpecularExponent() {
+        return this.specularExponent;
     }
 
     public void addTriangle(Triangle triangle) {
@@ -116,7 +129,7 @@ public class Mesh {
 
             // Iterate though each normal in the list, and sum them up
             for (Vector normal : vertexToListOfNormals.get(vertex)) {
-                Vector.addVectors(vertexNormal, normal, vertexNormal);
+                vertexNormal.addVector(normal);
             }
             // Calculate average of final normal vector
             vertexNormal.x /= listLength;
@@ -133,9 +146,35 @@ public class Mesh {
         return vertexNormals;
     }
 
+    public static Mesh loadMesh(Path objFile) {
+
+        ArrayList<Vector> vertices = new ArrayList<>(12);
+
+        try (BufferedReader br = new BufferedReader(new FileReader(objFile.toFile()))) {
+            ArrayList<Triangle> mesh = new ArrayList<>();
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] splitLine = line.split(" ");
+                if (line.startsWith("v")) {
+                    vertices.add(new Vector(Float.parseFloat(splitLine[1]), Float.parseFloat(splitLine[2]), Float.parseFloat(splitLine[3])));
+                }
+                if (line.startsWith("f")) {
+                    mesh.add(new Triangle(vertices.get(Integer.parseInt(splitLine[1]) - 1),
+                            vertices.get(Integer.parseInt(splitLine[2]) - 1),
+                            vertices.get(Integer.parseInt(splitLine[3]) - 1)));
+                }
+            }
+            return new Mesh(mesh);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
     public static void main(String[] args) {
-        Cube c = new Cube(Color.GREEN);
-        int a = 0;
+        Path file = Path.of("src/main/java/meshes/ship.obj");
+        Mesh m = Mesh.loadMesh(file);
     }
 
 }

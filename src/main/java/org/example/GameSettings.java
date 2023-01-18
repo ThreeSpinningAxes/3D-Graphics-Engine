@@ -66,6 +66,14 @@ public class GameSettings {
         return FOVRadians;
     }
 
+    public int getScreenWidth() {
+        return this.screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return this.screenHeight;
+    }
+
     public float getzNear() {
         return zNear;
     }

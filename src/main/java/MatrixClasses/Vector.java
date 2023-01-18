@@ -10,7 +10,7 @@ public class Vector {
 
     public float z;
 
-    public float w;
+    public float w = 1.0f;
 
     public Vector(float x, float y, float z) {
         this.x = x;
@@ -27,6 +27,13 @@ public class Vector {
 
     public Vector(){}
 
+    public Vector(float[] arr) {
+        this.x = arr[0];
+        this.y = arr[1];
+        this.z = arr[2];
+        this.w = 1.0f;
+    }
+
 
     public static Vector multiplyVectorWithMatrix(Vector V, Matrix4x4 A, Vector result) {
         result.x = V.x * A.get(0,0) + V.y * A.get(1,0) +  V.z * A.get(2,0) + V.w * A.get(3,0);
@@ -36,11 +43,16 @@ public class Vector {
         return result;
     }
 
-    public static void perspectiveDivide(Vector V) {
-        if (V.w != 0.0f) {
-            V.x /= V.w;
-            V.y /= V.w;
-            V.z /=V.w;
+    public static void multiplyVectorWithMatrixAndPerformPerspectiveDivide(Vector V, Matrix4x4 A, Vector result) {
+
+        result.x = V.x * A.get(0,0) + V.y * A.get(1,0) +  V.z * A.get(2,0) + V.w * A.get(3,0);
+        result.y = V.x * A.get(0,1) + V.y * A.get(1,1) +  V.z * A.get(2,1) + V.w * A.get(3,1);
+        result.z = V.x * A.get(0,2) + V.y * A.get(1,2) +  V.z * A.get(2,2) + V.w * A.get(3,2);
+        float w = V.x * A.get(0,3) + V.y * A.get(1,3) +  V.z * A.get(2,3) + V.w * A.get(3,3);
+        if (w != 0.0f) {
+            result.x /= w;
+            result.y /= w;
+            result.z /= w;
         }
     }
 
@@ -51,12 +63,18 @@ public class Vector {
         return result;
     }
 
+    public void addVector(Vector B) {
+        this.x += B.x;
+        this.y += B.y;
+        this.z += B.z;
+    }
+
     public static Vector subtractVectors(Vector A, Vector B) {
         Vector result = new Vector();
         result.x = A.x - B.x;
         result.y = A.y - B.y;
         result.z = A.z - B.z;
-        result.w = 1;
+        //result.w = 1;
         return result;
     }
 
@@ -81,6 +99,20 @@ public class Vector {
         return new Vector(A.y * B.z - A.z * B.y,  A.z * B.x - A.x * B.z,A.x * B.y - A.y * B.x);
     }
 
+    public Vector multiplyComponents(Vector B) {
+        this.x *= B.x;
+        this.y *= B.y;
+        this.z *= B.z;
+        return this;
+    }
+
+    public Vector multiplyCoefficient(float coefficient) {
+        this.x *= coefficient;
+        this.y *= coefficient;
+        this.z *= coefficient;
+        return this;
+    }
+
 
     public void clear() {
         this.x = 0.0f;
@@ -103,6 +135,12 @@ public class Vector {
         else
             return false;
     }
+
+    public void normalize() {
+        float mag = getMagnitude(this);
+        this.x /= mag;  this.y /= mag;  this.z /= mag;
+    }
+
 
     public static Vector normalize(Vector v) {
         float mag = getMagnitude(v);

@@ -105,7 +105,7 @@ public class GUI extends Canvas implements Runnable, KeyListener {
             this.pixelsOfFrameToBeDisplayed[i] = this.screen.getPixel(i);
         }
         Graphics graphics = bufferStrategy.getDrawGraphics();
-        this.screen.clearScreen();
+        //this.screen.clearScreen();
         this.screen.renderFrame(input);
 
         graphics.setColor(Color.black);
@@ -124,7 +124,7 @@ public class GUI extends Canvas implements Runnable, KeyListener {
     }
 
     public static void main(String[] args) {
-        GUI gui = new GUI(1024, 960);
+        GUI gui = new GUI(600, 400);
         gui.start();
     }
 

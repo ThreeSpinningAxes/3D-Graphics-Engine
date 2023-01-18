@@ -14,10 +14,17 @@ public class Triangle {
 
     public Color color;
 
-    public Vector[] points;
+    public Vector[] points = new Vector[3];
 
     public Triangle(Vector[] points) {
         this.points = points;
+    }
+
+    public Triangle(Vector v1, Vector v2, Vector v3) {
+        this.points[0] = v1;
+        this.points[1] = v2;
+        this.points[2] = v3;
+        this.color = Color.WHITE;
     }
 
     // only performed after projection has taken place. Used for drawing on screen

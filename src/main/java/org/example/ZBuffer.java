@@ -7,12 +7,12 @@ import java.util.Arrays;
 public class ZBuffer {
     float[] zBuffer;
 
-    float[] backBuffer;
+    int[] backBuffer;
 
     public ZBuffer(int pixels) {
         this.zBuffer = new float[pixels];
-        Arrays.fill(zBuffer, 10.0f);
-        this.backBuffer = new float[pixels];
+        Arrays.fill(zBuffer, 1.0f);
+        this.backBuffer = new int[pixels];
     }
 
     public float getZValue(int pixelIndex) {
@@ -25,9 +25,11 @@ public class ZBuffer {
     }
 
     public void clear() {
-        Arrays.fill(zBuffer, 10.0f);
+        Arrays.fill(zBuffer, 1.0f);
         Arrays.fill(backBuffer, 0);
     }
+
+
 
 
 }

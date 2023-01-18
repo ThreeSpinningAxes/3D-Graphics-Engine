@@ -1,7 +1,7 @@
 package MatrixClasses;
 
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
+import static net.jafama.FastMath.cos;
+import static net.jafama.FastMath.sin;
 
 public class RotationMatrix extends Matrix4x4{
 
