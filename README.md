@@ -5,4 +5,4 @@ on meshes (loaded from obj files) which include rotation, scaaling, and translat
 in progress..
 
 
-![](https://github.com/ThreeSpinningAxes/3D-Graphics-Renderer/blob/main/ezgif-3-0cee15ae2e.gif)
+![](https://github.com/ThreeSpinningAxes/3D-Graphics-Renderer/blob/main/ezgif-3-abb91de56a.gif)
